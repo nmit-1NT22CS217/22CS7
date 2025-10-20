@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+*.log
+outputs/
+uploads/
+
+# VS Code
+.vscode/
+
+# Node/React (frontend)
+frontend/node_modules/
+frontend/dist/
