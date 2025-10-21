@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "run_id": "20251020_173135",
+  "detections": [
+    {
+      "type": "EMAIL",
+      "value": "alice.j@example.com",
+      "start": 25,
+      "end": 44,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    },
+    {
+      "type": "IP_ADDRESS",
+      "value": "192.168.1.45",
+      "start": 100,
+      "end": 112,
+      "confidence": 0.95,
+      "rule": "ipv4_regex"
+    },
+    {
+      "type": "EMAIL",
+      "value": "bob.miller@company.org",
+      "start": 174,
+      "end": 196,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    }
+  ],
+  "anonymized_text": "Incident #1456 logged by PSEUDO_be98c8cc57fc on 2025-10-19.\nUser reported connection issues from IP PSEUDO_c85e78e9e0b8 at 09:12 AM.\nPlease follow up with the network administrator PSEUDO_606d45e36f52 for root cause analysis.",
+  "llm_text": "[MOCK RESPONSE] Model gemini-1.5-flash received 314 characters.",
+  "llm_denormalized": "[MOCK RESPONSE] Model gemini-1.5-flash received 314 characters.",
+  "validation": {
+    "run_id": "20251020_173135",
+    "anonymized_validation": {
+      "passed": true,
+      "pii_detected": 0,
+      "detections": [],
+      "message": "No PII detected ✅"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "PASS ✅"
+  }
+}

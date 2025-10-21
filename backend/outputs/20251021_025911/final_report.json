@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "run_id": "20251021_025911",
+  "message": "No PII found in input text.",
+  "detections": [],
+  "anonymized_text": "hi i am yashas",
+  "llm_text": null,
+  "llm_denormalized": null,
+  "validation": {
+    "run_id": "20251021_025911",
+    "anonymized_validation": {
+      "passed": true,
+      "pii_detected": 0,
+      "detections": [],
+      "message": "No PII detected ✅"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "PASS ✅"
+  }
+}

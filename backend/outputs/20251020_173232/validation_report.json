@@ -1,0 +1,30 @@
+{
+  "run_id": "20251020_173232",
+  "anonymized_validation": {
+    "passed": false,
+    "pii_detected": 1,
+    "detections": [
+      {
+        "type": "PHONE",
+        "value": "11579224",
+        "start": 40,
+        "end": 48,
+        "confidence": 0.88,
+        "rule": "phone_regex"
+      }
+    ],
+    "message": "1 PII instances still present ❌"
+  },
+  "denormalized_validation": {
+    "passed": true,
+    "remaining_pseudos": {},
+    "message": "No pseudonyms remaining ✅"
+  },
+  "pseudomap_validation": {
+    "passed": true,
+    "invalid_entries": [],
+    "duplicate_pseudonyms": [],
+    "message": "Mapping integrity OK ✅"
+  },
+  "overall_status": "FAIL ❌"
+}

@@ -1,0 +1,71 @@
+{
+  "ok": true,
+  "run_id": "20251020_163356",
+  "detections": [
+    {
+      "type": "NAME",
+      "value": "Alice Johnson",
+      "start": 33,
+      "end": 46,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    },
+    {
+      "type": "EMAIL",
+      "value": "alice.j@example.com",
+      "start": 60,
+      "end": 79,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    },
+    {
+      "type": "PHONE",
+      "value": "+1-555-123-9876",
+      "start": 103,
+      "end": 118,
+      "confidence": 0.88,
+      "rule": "phone_regex"
+    },
+    {
+      "type": "NAME",
+      "value": "New York",
+      "start": 176,
+      "end": 184,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    }
+  ],
+  "anonymized_text": "\n    Customer: Hello, my name is PSEUDO_23959f873f4a. My email is PSEUDO_be98c8cc57fc and my phone number is PSEUDO_183193fe24fe.\n    I lost my credit card ending with 7890 yesterday in PSEUDO_82983dace266.\n    ",
+  "llm_text": "[MOCK RESPONSE] Model gemini-1.5-flash received 300 characters.",
+  "llm_denormalized": "[MOCK RESPONSE] Model gemini-1.5-flash received 300 characters.",
+  "validation": {
+    "run_id": "20251020_163356",
+    "anonymized_validation": {
+      "passed": false,
+      "pii_detected": 1,
+      "detections": [
+        {
+          "type": "PHONE",
+          "value": "183193",
+          "start": 116,
+          "end": 122,
+          "confidence": 0.6,
+          "rule": "phone_regex"
+        }
+      ],
+      "message": "1 PII instances still present ❌"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "FAIL ❌"
+  }
+}

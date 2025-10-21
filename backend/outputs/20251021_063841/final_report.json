@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "run_id": "20251021_063841",
+  "detections": [
+    {
+      "type": "NAME",
+      "value": "John Doe",
+      "start": 18,
+      "end": 26,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    },
+    {
+      "type": "EMAIL",
+      "value": "jhon@gmail.com",
+      "start": 38,
+      "end": 52,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    },
+    {
+      "type": "PHONE",
+      "value": "70709707",
+      "start": 72,
+      "end": 80,
+      "confidence": 0.88,
+      "rule": "phone_regex"
+    }
+  ],
+  "anonymized_text": "Hello, my name is PSEUDO_161b33881db7.  email is PSEUDO_447ddd747932 phone number 907070PSEUDO_28787fca2198",
+  "llm_text": "Hello PSEUDO_161b33881db7!\n\nThanks for sharing your details. How can I help you today?",
+  "llm_denormalized": "Hello John Doe!\n\nThanks for sharing your details. How can I help you today?",
+  "validation": {
+    "run_id": "20251021_063841",
+    "anonymized_validation": {
+      "passed": true,
+      "pii_detected": 0,
+      "detections": [],
+      "message": "No PII detected ✅"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "PASS ✅"
+  }
+}

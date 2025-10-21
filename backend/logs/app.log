@@ -1,0 +1,933 @@
+[INFO] 🚀 Testing utils module...
+[INFO] Generated run_id: run_20251020_154353
+[INFO] Sanitized: Hello [EMAIL_REDACTED] and phone [NUM_REDACTED]
+[INFO] Wrote JSON file: D:\project\backend\outputs\test_utils.json
+[INFO] Read back JSON: {'msg': 'Utils test', 'run_id': 'run_20251020_154353'}
+[INFO] ✅ All utils functions working fine.
+[INFO] 🚀 Running extract_text self-test...
+[INFO] 📄 Extracting from text file: backend/uploads/sample.txt
+[INFO] 🧾 Extracting from JSON: backend/uploads/sample.json
+[INFO] 🔍 Extracting payloads from PCAP: backend/uploads/sample.pcap
+[INFO] Running detect_pii.py self-test...
+[INFO] Running PII detection on input (len=139)
+[INFO] Detection complete: 6 items found.
+[INFO] detect_pii self-test complete.
+[INFO] Running anonymize.py self-test...
+[INFO] Original: Contact John Doe at [EMAIL_REDACTED] or call +1-555-987-[NUM_REDACTED]. Card: [NUM_REDACTED] [NUM_REDACTED] [NUM_REDACTED] [NUM_REDACTED]
+[INFO] Applying anonymization policy='mask' (3 items)
+[INFO] Masked : Contact John Doe at j********************r call +1-5***********6543d: ***************[NUM_REDACTED]
+[INFO] Applying anonymization policy='replace' (3 items)
+[INFO] Replaced: Contact John Doe at j<EMAIL>r call +1-5<PHONE>d: <CREDIT_CARD>
+[INFO] Applying anonymization policy='pseudonymize' (3 items)
+[INFO] Pseudonymized: Contact John Doe at jPSEUDO_d64e70e8ee76r call +1-5PSEUDO_05e4b2a480a3d: PSEUDO_a7486f482b29
+[INFO] Pseudomap sample: {'[EMAIL_REDACTED]': 'PSEUDO_d64e70e8ee76', '+1-555-987-[NUM_REDACTED]': 'PSEUDO_05e4b2a480a3', '[NUM_REDACTED] [NUM_REDACTED] [NUM_REDACTED] [NUM_REDACTED]': 'PSEUDO_a7486f482b29'}
+[INFO] anonymize.py self-test complete.
+[INFO] Running denormalize.py self-test...
+[INFO] ✅ Created pseudomap for 3 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_161348\mapping.json
+[INFO] 📂 Loaded pseudomap with 3 entries from D:\project\backend\scripts\..\outputs\20251020_161348\mapping.json
+[INFO] denormalize_text: completed - replaced 3 pseudonym occurrences
+[INFO] denormalize.py self-test complete.
+[INFO] Running denormalize.py self-test (with backup mode)...
+[INFO] ✅ Created pseudomap for 2 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_161614\mapping.json
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_161614\mapping.json
+[INFO] ✅ Denormalization complete — replaced 2 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_161614\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_161614\llm_denormalized.txt
+[INFO] Self-test complete ✅
+[INFO] Running validate.py self-test...
+[INFO] ✅ Created pseudomap for 2 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_161804\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (2 items)
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_161804\mapping.json
+[INFO] ✅ Denormalization complete — replaced 2 pseudonym(s)
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_161804\mapping.json
+[INFO] Running PII detection on input (len=66)
+[INFO] Detection complete: 0 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_161804\validation_report.json
+[INFO] validate.py self-test complete ✅
+[INFO] Running llm_workflow.py self-test...
+[INFO] 🚀 Starting workflow for run_id=20251020_163356
+[INFO] Running PII detection on input (len=190)
+[INFO] Detection complete: 4 items found.
+[INFO] 🔍 Detected 4 PII entities
+[INFO] ✅ Created pseudomap for 4 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_163356\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (4 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 4 entries from D:\project\backend\scripts\..\outputs\20251020_163356\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_163356\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_163356\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 4 entries from D:\project\backend\scripts\..\outputs\20251020_163356\mapping.json
+[INFO] Running PII detection on input (len=211)
+[INFO] Detection complete: 1 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_163356\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_163356/final_report.json
+[INFO] ✅ llm_workflow self-test complete.
+[INFO] 🌐 Starting Flask backend server at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend server at http://127.0.0.1:5000
+[INFO] 🚀 New LLM workflow initiated (run_id=20251020_165338)
+[ERROR] ❌ Error in /api/analyze
+Traceback (most recent call last):
+  File "D:\project\backend\app.py", line 92, in analyze
+    result = process_text_with_llm(text=text, detections=None, run_id=run_id)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: process_text_with_llm() got an unexpected keyword argument 'detections'
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting end-to-end LLM workflow
+[INFO] 🚀 Starting workflow for run_id=20251020_165730
+[INFO] Running PII detection on input (len=89)
+[INFO] Detection complete: 2 items found.
+[INFO] 🔍 Detected 2 PII entities
+[INFO] ✅ Created pseudomap for 2 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_165730\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (2 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_165730\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_165730\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_165730\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_165730\mapping.json
+[INFO] Running PII detection on input (len=97)
+[INFO] Detection complete: 0 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_165730\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_165730/final_report.json
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_165730\mapping.json
+[INFO] Running PII detection on input (len=97)
+[INFO] Detection complete: 0 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_165730\validation_report.json
+[INFO] 📄 Report stored at: D:\project\backend\outputs\20251020_165730\final_report.json
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251020_170433
+[INFO] Running PII detection on input (len=77)
+[INFO] Detection complete: 3 items found.
+[INFO] 🔍 Detected 3 PII entities
+[INFO] ✅ Created pseudomap for 3 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_170433\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (3 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 3 entries from D:\project\backend\scripts\..\outputs\20251020_170433\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_170433\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_170433\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 3 entries from D:\project\backend\scripts\..\outputs\20251020_170433\mapping.json
+[INFO] Running PII detection on input (len=87)
+[INFO] Detection complete: 0 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_170433\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_170433/final_report.json
+[INFO] 📂 Loaded pseudomap with 3 entries from D:\project\backend\scripts\..\outputs\20251020_170433\mapping.json
+[INFO] Running PII detection on input (len=87)
+[INFO] Detection complete: 0 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_170433\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251020_170532
+[INFO] Running PII detection on input (len=348)
+[INFO] Detection complete: 5 items found.
+[INFO] 🔍 Detected 5 PII entities
+[INFO] ✅ Created pseudomap for 5 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_170532\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (5 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251020_170532\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_170532\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_170532\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251020_170532\mapping.json
+[INFO] Running PII detection on input (len=366)
+[INFO] Detection complete: 1 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_170532\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_170532/final_report.json
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251020_170532\mapping.json
+[INFO] Running PII detection on input (len=366)
+[INFO] Detection complete: 1 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_170532\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251020_170551
+[INFO] Running PII detection on input (len=127)
+[INFO] Detection complete: 2 items found.
+[INFO] 🔍 Detected 2 PII entities
+[INFO] ✅ Created pseudomap for 2 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_170551\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (2 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_170551\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_170551\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_170551\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_170551\mapping.json
+[INFO] Running PII detection on input (len=135)
+[INFO] Detection complete: 1 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_170551\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_170551/final_report.json
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_170551\mapping.json
+[INFO] Running PII detection on input (len=135)
+[INFO] Detection complete: 1 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_170551\validation_report.json
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251020_171248
+[INFO] Running PII detection on input (len=236)
+[INFO] Detection complete: 2 items found.
+[INFO] 🔍 Detected 2 PII entities
+[INFO] ✅ Created pseudomap for 2 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_171248\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (2 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_171248\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_171248\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_171248\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_171248\mapping.json
+[INFO] Running PII detection on input (len=233)
+[INFO] Detection complete: 0 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_171248\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_171248/final_report.json
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_171248\mapping.json
+[INFO] Running PII detection on input (len=233)
+[INFO] Detection complete: 0 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_171248\validation_report.json
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251020_172016
+[INFO] Running PII detection on input (len=7)
+[INFO] Detection complete: 0 items found.
+[INFO] 🔍 Detected 0 PII entities
+[WARNING] No PII detected — skipping anonymization.
+[WARNING] ⚠️ Mapping file not found for run_id=20251020_172016
+[INFO] Running PII detection on input (len=7)
+[INFO] Detection complete: 0 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_172016\validation_report.json
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251020_172344
+[INFO] Running PII detection on input (len=236)
+[INFO] Detection complete: 2 items found.
+[INFO] 🔍 Detected 2 PII entities
+[INFO] ✅ Created pseudomap for 2 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_172344\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (2 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_172344\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_172344\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_172344\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_172344\mapping.json
+[INFO] Running PII detection on input (len=233)
+[INFO] Detection complete: 0 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_172344\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_172344/final_report.json
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_172344\mapping.json
+[INFO] Running PII detection on input (len=233)
+[INFO] Detection complete: 0 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_172344\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251020_172530
+[INFO] Running PII detection on input (len=348)
+[INFO] Detection complete: 5 items found.
+[INFO] 🔍 Detected 5 PII entities
+[INFO] ✅ Created pseudomap for 5 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_172530\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (5 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251020_172530\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_172530\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_172530\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251020_172530\mapping.json
+[INFO] Running PII detection on input (len=366)
+[INFO] Detection complete: 1 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_172530\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_172530/final_report.json
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251020_172530\mapping.json
+[INFO] Running PII detection on input (len=366)
+[INFO] Detection complete: 1 items found.
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_172530\validation_report.json
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251020_173121
+[INFO] Running PII detection on input (len=348)
+[INFO] Detection complete: 5 valid items found (after cleaning).
+[INFO] 🔍 Detected 5 PII entities
+[INFO] ✅ Created pseudomap for 5 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_173121\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (5 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251020_173121\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_173121\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_173121\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251020_173121\mapping.json
+[INFO] Running PII detection on input (len=366)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173121\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_173121/final_report.json
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251020_173121\mapping.json
+[INFO] Running PII detection on input (len=366)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173121\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251020_173135
+[INFO] Running PII detection on input (len=221)
+[INFO] Detection complete: 3 valid items found (after cleaning).
+[INFO] 🔍 Detected 3 PII entities
+[INFO] ✅ Created pseudomap for 3 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_173135\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (3 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 3 entries from D:\project\backend\scripts\..\outputs\20251020_173135\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_173135\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_173135\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 3 entries from D:\project\backend\scripts\..\outputs\20251020_173135\mapping.json
+[INFO] Running PII detection on input (len=225)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173135\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_173135/final_report.json
+[INFO] 📂 Loaded pseudomap with 3 entries from D:\project\backend\scripts\..\outputs\20251020_173135\mapping.json
+[INFO] Running PII detection on input (len=225)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173135\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251020_173208
+[INFO] Running PII detection on input (len=162)
+[INFO] Detection complete: 6 valid items found (after cleaning).
+[INFO] 🔍 Detected 6 PII entities
+[INFO] ✅ Created pseudomap for 6 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_173208\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (6 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 6 entries from D:\project\backend\scripts\..\outputs\20251020_173208\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_173208\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_173208\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 6 entries from D:\project\backend\scripts\..\outputs\20251020_173208\mapping.json
+[INFO] Running PII detection on input (len=156)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173208\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_173208/final_report.json
+[INFO] 📂 Loaded pseudomap with 6 entries from D:\project\backend\scripts\..\outputs\20251020_173208\mapping.json
+[INFO] Running PII detection on input (len=156)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173208\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251020_173221
+[INFO] Running PII detection on input (len=236)
+[INFO] Detection complete: 2 valid items found (after cleaning).
+[INFO] 🔍 Detected 2 PII entities
+[INFO] ✅ Created pseudomap for 2 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_173221\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (2 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_173221\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_173221\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_173221\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_173221\mapping.json
+[INFO] Running PII detection on input (len=233)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173221\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_173221/final_report.json
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251020_173221\mapping.json
+[INFO] Running PII detection on input (len=233)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173221\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251020_173232
+[INFO] Running PII detection on input (len=162)
+[INFO] Detection complete: 6 valid items found (after cleaning).
+[INFO] 🔍 Detected 6 PII entities
+[INFO] ✅ Created pseudomap for 6 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_173232\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (6 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 6 entries from D:\project\backend\scripts\..\outputs\20251020_173232\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_173232\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_173232\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 6 entries from D:\project\backend\scripts\..\outputs\20251020_173232\mapping.json
+[INFO] Running PII detection on input (len=156)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173232\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_173232/final_report.json
+[INFO] 📂 Loaded pseudomap with 6 entries from D:\project\backend\scripts\..\outputs\20251020_173232\mapping.json
+[INFO] Running PII detection on input (len=156)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173232\validation_report.json
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251020_173913
+[INFO] Running PII detection on input (len=162)
+[INFO] Detection complete: 6 valid items found (after cleaning).
+[INFO] 🔍 Detected 6 PII entities
+[INFO] ✅ Created pseudomap for 6 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251020_173913\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (6 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 6 entries from D:\project\backend\scripts\..\outputs\20251020_173913\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251020_173913\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251020_173913\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 6 entries from D:\project\backend\scripts\..\outputs\20251020_173913\mapping.json
+[INFO] Running PII detection on input (len=156)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173913\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251020_173913/final_report.json
+[INFO] 📂 Loaded pseudomap with 6 entries from D:\project\backend\scripts\..\outputs\20251020_173913\mapping.json
+[INFO] Running PII detection on input (len=156)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251020_173913\validation_report.json
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251021_025320
+[INFO] Running PII detection on input (len=46)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_025320\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[ERROR] ❌ LLM API call failed: [HTTP 400] 400 Client Error: Bad Request for url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=AIzaSyAEEp24SnavB3nwcf0BZFmwTpyO0x7Ne4U
+[INFO] 🚀 Starting workflow for run_id=20251021_025345
+[INFO] Running PII detection on input (len=46)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_025345\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[ERROR] ❌ LLM API call failed: [HTTP 400] 400 Client Error: Bad Request for url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=AIzaSyAEEp24SnavB3nwcf0BZFmwTpyO0x7Ne4U
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251021_025759
+[INFO] Running PII detection on input (len=46)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_025759\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[ERROR] ❌ LLM API call failed: [HTTP 404] 404 Client Error: Not Found for url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=AIzaSyAEEp24SnavB3nwcf0BZFmwTpyO0x7Ne4U
+[INFO] 🚀 Starting workflow for run_id=20251021_025856
+[INFO] Running PII detection on input (len=46)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_025856\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[ERROR] ❌ LLM API call failed: [HTTP 404] 404 Client Error: Not Found for url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=AIzaSyAEEp24SnavB3nwcf0BZFmwTpyO0x7Ne4U
+[INFO] 🚀 Starting workflow for run_id=20251021_025911
+[INFO] Running PII detection on input (len=14)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🔍 Detected 0 PII entities
+[WARNING] No PII detected — skipping anonymization.
+[WARNING] ⚠️ Mapping file not found for run_id=20251021_025911
+[INFO] Running PII detection on input (len=14)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_025911\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251021_025938
+[INFO] Running PII detection on input (len=43)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_025938\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[ERROR] ❌ LLM API call failed: [HTTP 404] 404 Client Error: Not Found for url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=AIzaSyAEEp24SnavB3nwcf0BZFmwTpyO0x7Ne4U
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251021_030028
+[INFO] Running PII detection on input (len=24)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_030028\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[ERROR] ❌ LLM API call failed: [HTTP 404] 404 Client Error: Not Found for url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=AIzaSyAEEp24SnavB3nwcf0BZFmwTpyO0x7Ne4U
+[INFO] 🚀 Starting workflow for run_id=20251021_030206
+[INFO] Running PII detection on input (len=21)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_030206\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[ERROR] ❌ LLM API call failed: [HTTP 404] 404 Client Error: Not Found for url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=AIzaSyAEEp24SnavB3nwcf0BZFmwTpyO0x7Ne4U
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251021_030618
+[INFO] Running PII detection on input (len=20)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_030618\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[ERROR] ❌ LLM API call failed: [REQUEST ERROR] 404 Client Error: Not Found for url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251021_030754
+[INFO] Running PII detection on input (len=15)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_030754\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[ERROR] ❌ LLM API call failed: [HTTP 404] 404 Client Error: Not Found for url: https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251021_031307
+[INFO] Running PII detection on input (len=22)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_031307\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[WARNING] ⚠️ Gemini output was not valid JSON; continuing with raw text
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_031307\mapping.json
+[INFO] ✅ Denormalization complete — replaced 2 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_031307\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_031307\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_031307\mapping.json
+[INFO] Running PII detection on input (len=19)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_031307\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251021_031307/final_report.json
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_031307\mapping.json
+[INFO] Running PII detection on input (len=19)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_031307\validation_report.json
+[INFO] Running llm_workflow.py self-test...
+[INFO] 🚀 Starting workflow for run_id=20251021_034952
+[INFO] Running PII detection on input (len=190)
+[INFO] Detection complete: 4 valid items found (after cleaning).
+[INFO] 🔍 Detected 4 PII entities
+[INFO] ✅ Created pseudomap for 4 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_034952\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (4 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text directly to Gemini (no context)
+[INFO] ✅ LLM response (raw anonymized output) saved
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 4 entries from D:\project\backend\scripts\..\outputs\20251021_034952\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_034952\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_034952\llm_denormalized.txt
+[INFO] ✅ LLM denormalized output saved
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 4 entries from D:\project\backend\scripts\..\outputs\20251021_034952\mapping.json
+[INFO] Running PII detection on input (len=211)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_034952\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251021_034952/final_report.json
+[INFO] ✅ llm_workflow self-test complete.
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251021_035157
+[INFO] Running PII detection on input (len=25)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_035157\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Anonymization complete and mapping saved
+[INFO] 🧠 Sending anonymized text to Gemini LLM
+[INFO] ✅ LLM response received and saved
+[INFO] 📄 Parsed valid JSON from Gemini output
+[INFO] 🔁 Starting denormalization process
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_035157\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_035157\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_035157\llm_denormalized.txt
+[INFO] ✅ Denormalization complete
+[INFO] 🧾 Running full validation checks
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_035157\mapping.json
+[INFO] Running PII detection on input (len=22)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_035157\validation_report.json
+[INFO] 🧩 Final report saved to outputs/20251021_035157/final_report.json
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_035157\mapping.json
+[INFO] Running PII detection on input (len=22)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_035157\validation_report.json
+[INFO] 🌐 Starting Flask backend at http://127.0.0.1:5000
+[INFO] 🚀 Starting workflow for run_id=20251021_035916
+[INFO] Running PII detection on input (len=30)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_035916\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Text anonymized and pseudonym map saved.
+[INFO] 🧠 Sending anonymized text directly to Gemini LLM (no context, plain prompt).
+[INFO] ✅ LLM raw response received and saved (contains pseudonyms).
+[INFO] 🔁 Running denormalization (replace pseudonyms with actual values).
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_035916\mapping.json
+[INFO] ✅ Denormalization complete — replaced 1 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_035916\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_035916\llm_denormalized.txt
+[INFO] ✅ Denormalization complete — pseudonyms replaced with original data.
+[INFO] 🧾 Validating data integrity post-denormalization.
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_035916\mapping.json
+[INFO] Running PII detection on input (len=27)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_035916\validation_report.json
+[INFO] ✅ Validation completed: PASS ✅
+[INFO] 🧩 Final report saved: outputs/20251021_035916/final_report.json
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_035916\mapping.json
+[INFO] Running PII detection on input (len=27)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_035916\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251021_040007
+[INFO] Running PII detection on input (len=65)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_040007\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Text anonymized and pseudonym map saved.
+[INFO] 🧠 Sending anonymized text directly to Gemini LLM (no context, plain prompt).
+[INFO] ✅ LLM raw response received and saved (contains pseudonyms).
+[INFO] 🔁 Running denormalization (replace pseudonyms with actual values).
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040007\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_040007\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_040007\llm_denormalized.txt
+[INFO] ✅ Denormalization complete — pseudonyms replaced with original data.
+[INFO] 🧾 Validating data integrity post-denormalization.
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040007\mapping.json
+[INFO] Running PII detection on input (len=67)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040007\validation_report.json
+[INFO] ✅ Validation completed: PASS ✅
+[INFO] 🧩 Final report saved: outputs/20251021_040007/final_report.json
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040007\mapping.json
+[INFO] Running PII detection on input (len=67)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040007\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251021_040040
+[INFO] Running PII detection on input (len=30)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_040040\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Text anonymized and pseudonym map saved.
+[INFO] 🧠 Sending anonymized text directly to Gemini LLM (no context, plain prompt).
+[INFO] ✅ LLM raw response received and saved (contains pseudonyms).
+[INFO] 🔁 Running denormalization (replace pseudonyms with actual values).
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040040\mapping.json
+[INFO] ✅ Denormalization complete — replaced 1 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_040040\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_040040\llm_denormalized.txt
+[INFO] ✅ Denormalization complete — pseudonyms replaced with original data.
+[INFO] 🧾 Validating data integrity post-denormalization.
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040040\mapping.json
+[INFO] Running PII detection on input (len=27)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040040\validation_report.json
+[INFO] ✅ Validation completed: PASS ✅
+[INFO] 🧩 Final report saved: outputs/20251021_040040/final_report.json
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040040\mapping.json
+[INFO] Running PII detection on input (len=27)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040040\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251021_040059
+[INFO] Running PII detection on input (len=42)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_040059\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Text anonymized and pseudonym map saved.
+[INFO] 🧠 Sending anonymized text directly to Gemini LLM (no context, plain prompt).
+[INFO] ✅ LLM raw response received and saved (contains pseudonyms).
+[INFO] 🔁 Running denormalization (replace pseudonyms with actual values).
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040059\mapping.json
+[INFO] ✅ Denormalization complete — replaced 1 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_040059\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_040059\llm_denormalized.txt
+[INFO] ✅ Denormalization complete — pseudonyms replaced with original data.
+[INFO] 🧾 Validating data integrity post-denormalization.
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040059\mapping.json
+[INFO] Running PII detection on input (len=39)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040059\validation_report.json
+[INFO] ✅ Validation completed: PASS ✅
+[INFO] 🧩 Final report saved: outputs/20251021_040059/final_report.json
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040059\mapping.json
+[INFO] Running PII detection on input (len=39)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040059\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251021_040315
+[INFO] Running PII detection on input (len=448)
+[INFO] Detection complete: 9 valid items found (after cleaning).
+[INFO] 🔍 Detected 9 PII entities
+[INFO] ✅ Created pseudomap for 9 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_040315\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (9 items)
+[INFO] 🔒 Text anonymized and pseudonym map saved.
+[INFO] 🧠 Sending anonymized text directly to Gemini LLM (no context, plain prompt).
+[INFO] ✅ LLM raw response received and saved (contains pseudonyms).
+[INFO] 🔁 Running denormalization (replace pseudonyms with actual values).
+[INFO] 📂 Loaded pseudomap with 9 entries from D:\project\backend\scripts\..\outputs\20251021_040315\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_040315\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_040315\llm_denormalized.txt
+[INFO] ✅ Denormalization complete — pseudonyms replaced with original data.
+[INFO] 🧾 Validating data integrity post-denormalization.
+[INFO] 📂 Loaded pseudomap with 9 entries from D:\project\backend\scripts\..\outputs\20251021_040315\mapping.json
+[INFO] Running PII detection on input (len=491)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040315\validation_report.json
+[INFO] ✅ Validation completed: FAIL ❌
+[INFO] 🧩 Final report saved: outputs/20251021_040315/final_report.json
+[INFO] 📂 Loaded pseudomap with 9 entries from D:\project\backend\scripts\..\outputs\20251021_040315\mapping.json
+[INFO] Running PII detection on input (len=491)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040315\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251021_040833
+[INFO] Running PII detection on input (len=162)
+[INFO] Detection complete: 5 valid items found (after cleaning).
+[INFO] 🔍 Detected 5 PII entities
+[INFO] ✅ Created pseudomap for 5 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_040833\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (5 items)
+[INFO] 🔒 Text anonymized and pseudonym map saved.
+[INFO] 🧠 Sending anonymized text directly to Gemini LLM (no context, plain prompt).
+[INFO] ✅ LLM raw response received and saved (contains pseudonyms).
+[INFO] 🔁 Running denormalization (replace pseudonyms with actual values).
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251021_040833\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_040833\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_040833\llm_denormalized.txt
+[INFO] ✅ Denormalization complete — pseudonyms replaced with original data.
+[INFO] 🧾 Validating data integrity post-denormalization.
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251021_040833\mapping.json
+[INFO] Running PII detection on input (len=185)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040833\validation_report.json
+[INFO] ✅ Validation completed: FAIL ❌
+[INFO] 🧩 Final report saved: outputs/20251021_040833/final_report.json
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251021_040833\mapping.json
+[INFO] Running PII detection on input (len=185)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040833\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251021_040845
+[INFO] Running PII detection on input (len=162)
+[INFO] Detection complete: 5 valid items found (after cleaning).
+[INFO] 🔍 Detected 5 PII entities
+[INFO] ✅ Created pseudomap for 5 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_040845\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (5 items)
+[INFO] 🔒 Text anonymized and pseudonym map saved.
+[INFO] 🧠 Sending anonymized text directly to Gemini LLM (no context, plain prompt).
+[INFO] ✅ LLM raw response received and saved (contains pseudonyms).
+[INFO] 🔁 Running denormalization (replace pseudonyms with actual values).
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251021_040845\mapping.json
+[INFO] ✅ Denormalization complete — replaced 0 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_040845\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_040845\llm_denormalized.txt
+[INFO] ✅ Denormalization complete — pseudonyms replaced with original data.
+[INFO] 🧾 Validating data integrity post-denormalization.
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251021_040845\mapping.json
+[INFO] Running PII detection on input (len=185)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040845\validation_report.json
+[INFO] ✅ Validation completed: FAIL ❌
+[INFO] 🧩 Final report saved: outputs/20251021_040845/final_report.json
+[INFO] 📂 Loaded pseudomap with 5 entries from D:\project\backend\scripts\..\outputs\20251021_040845\mapping.json
+[INFO] Running PII detection on input (len=185)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040845\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251021_040919
+[INFO] Running PII detection on input (len=44)
+[INFO] Detection complete: 2 valid items found (after cleaning).
+[INFO] 🔍 Detected 2 PII entities
+[INFO] ✅ Created pseudomap for 2 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_040919\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (2 items)
+[INFO] 🔒 Text anonymized and pseudonym map saved.
+[INFO] 🧠 Sending anonymized text directly to Gemini LLM (no context, plain prompt).
+[INFO] ✅ LLM raw response received and saved (contains pseudonyms).
+[INFO] 🔁 Running denormalization (replace pseudonyms with actual values).
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251021_040919\mapping.json
+[INFO] ✅ Denormalization complete — replaced 2 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_040919\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_040919\llm_denormalized.txt
+[INFO] ✅ Denormalization complete — pseudonyms replaced with original data.
+[INFO] 🧾 Validating data integrity post-denormalization.
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251021_040919\mapping.json
+[INFO] Running PII detection on input (len=59)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040919\validation_report.json
+[INFO] ✅ Validation completed: PASS ✅
+[INFO] 🧩 Final report saved: outputs/20251021_040919/final_report.json
+[INFO] 📂 Loaded pseudomap with 2 entries from D:\project\backend\scripts\..\outputs\20251021_040919\mapping.json
+[INFO] Running PII detection on input (len=59)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040919\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251021_040942
+[INFO] Running PII detection on input (len=27)
+[INFO] Detection complete: 1 valid items found (after cleaning).
+[INFO] 🔍 Detected 1 PII entities
+[INFO] ✅ Created pseudomap for 1 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_040942\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (1 items)
+[INFO] 🔒 Text anonymized and pseudonym map saved.
+[INFO] 🧠 Sending anonymized text directly to Gemini LLM (no context, plain prompt).
+[INFO] ✅ LLM raw response received and saved (contains pseudonyms).
+[INFO] 🔁 Running denormalization (replace pseudonyms with actual values).
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040942\mapping.json
+[INFO] ✅ Denormalization complete — replaced 1 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_040942\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_040942\llm_denormalized.txt
+[INFO] ✅ Denormalization complete — pseudonyms replaced with original data.
+[INFO] 🧾 Validating data integrity post-denormalization.
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040942\mapping.json
+[INFO] Running PII detection on input (len=38)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040942\validation_report.json
+[INFO] ✅ Validation completed: PASS ✅
+[INFO] 🧩 Final report saved: outputs/20251021_040942/final_report.json
+[INFO] 📂 Loaded pseudomap with 1 entries from D:\project\backend\scripts\..\outputs\20251021_040942\mapping.json
+[INFO] Running PII detection on input (len=38)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_040942\validation_report.json
+[INFO] 🚀 Starting workflow for run_id=20251021_063841
+[INFO] Running PII detection on input (len=80)
+[INFO] Detection complete: 3 valid items found (after cleaning).
+[INFO] 🔍 Detected 3 PII entities
+[INFO] ✅ Created pseudomap for 3 entries
+[INFO] 💾 Mapping saved: D:\project\backend\scripts\..\outputs\20251021_063841\mapping.json
+[INFO] Applying anonymization policy='pseudonymize' (3 items)
+[INFO] 🔒 Text anonymized and pseudonym map saved.
+[INFO] 🧠 Sending anonymized text directly to Gemini LLM (no context, plain prompt).
+[INFO] ✅ LLM raw response received and saved (contains pseudonyms).
+[INFO] 🔁 Running denormalization (replace pseudonyms with actual values).
+[INFO] 📂 Loaded pseudomap with 3 entries from D:\project\backend\scripts\..\outputs\20251021_063841\mapping.json
+[INFO] ✅ Denormalization complete — replaced 1 pseudonym(s)
+[INFO] 💾 Saved backups: 
+  - D:\project\backend\scripts\..\outputs\20251021_063841\llm_raw_with_pseudos.txt
+  - D:\project\backend\scripts\..\outputs\20251021_063841\llm_denormalized.txt
+[INFO] ✅ Denormalization complete — pseudonyms replaced with original data.
+[INFO] 🧾 Validating data integrity post-denormalization.
+[INFO] 📂 Loaded pseudomap with 3 entries from D:\project\backend\scripts\..\outputs\20251021_063841\mapping.json
+[INFO] Running PII detection on input (len=107)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_063841\validation_report.json
+[INFO] ✅ Validation completed: PASS ✅
+[INFO] 🧩 Final report saved: outputs/20251021_063841/final_report.json
+[INFO] 📂 Loaded pseudomap with 3 entries from D:\project\backend\scripts\..\outputs\20251021_063841\mapping.json
+[INFO] Running PII detection on input (len=107)
+[INFO] Detection complete: 0 valid items found (after cleaning).
+[INFO] 🧾 Validation report saved at: D:\project\backend\scripts\..\outputs\20251021_063841\validation_report.json

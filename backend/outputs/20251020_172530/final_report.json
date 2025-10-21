@@ -1,0 +1,79 @@
+{
+  "ok": true,
+  "run_id": "20251020_172530",
+  "detections": [
+    {
+      "type": "NAME",
+      "value": "Hi John Doe",
+      "start": 7,
+      "end": 18,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    },
+    {
+      "type": "CREDIT_CARD",
+      "value": "4111 1111 1111 1111",
+      "start": 63,
+      "end": 82,
+      "confidence": 0.95,
+      "rule": "creditcard_generic"
+    },
+    {
+      "type": "EMAIL",
+      "value": "john.doe@example.com",
+      "start": 152,
+      "end": 172,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    },
+    {
+      "type": "PHONE",
+      "value": "+1-202-555-0198",
+      "start": 190,
+      "end": 205,
+      "confidence": 0.88,
+      "rule": "phone_regex"
+    },
+    {
+      "type": "NAME",
+      "value": "Baker Street",
+      "start": 257,
+      "end": 269,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    }
+  ],
+  "anonymized_text": "Agent: PSEUDO_197155ae5563, this is SecurePay support. I see your card PSEUDO_496f99274aa9 was used yesterday at Amazon. \nCan you confirm your registered email PSEUDO_fb0b773de846 and phone number PSEUDO_277c6d5ad033?\nCustomer: Yes, that’s my info. My address is 221B PSEUDO_6d1611f5d54f, London NW1 6XE.\nAgent: Great, we’ll issue a replacement card to that address.",
+  "llm_text": "[MOCK RESPONSE] Model gemini-1.5-flash received 455 characters.",
+  "llm_denormalized": "[MOCK RESPONSE] Model gemini-1.5-flash received 455 characters.",
+  "validation": {
+    "run_id": "20251020_172530",
+    "anonymized_validation": {
+      "passed": false,
+      "pii_detected": 1,
+      "detections": [
+        {
+          "type": "PHONE",
+          "value": "197155",
+          "start": 14,
+          "end": 20,
+          "confidence": 0.6,
+          "rule": "phone_regex"
+        }
+      ],
+      "message": "1 PII instances still present ❌"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "FAIL ❌"
+  }
+}

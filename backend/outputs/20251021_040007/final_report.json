@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "run_id": "20251021_040007",
+  "detections": [
+    {
+      "type": "EMAIL",
+      "value": "clara@example.com",
+      "start": 47,
+      "end": 64,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    }
+  ],
+  "anonymized_text": "Hi, I’m Clara. Clara wants to verify her email PSEUDO_f8e7b45ec8b9.",
+  "llm_text": "{\"candidates\": [{\"content\": {\"role\": \"model\"}, \"finishReason\": \"MAX_TOKENS\", \"index\": 0}], \"usageMetadata\": {\"promptTokenCount\": 30, \"totalTokenCount\": 541, \"promptTokensDetails\": [{\"modality\": \"TEXT\", \"tokenCount\": 30}], \"thoughtsTokenCount\": 511}, \"modelVersion\": \"gemini-2.5-flash\", \"responseId\": \"TAX3aNq2IoqY1e8PxerT-Qc\"}",
+  "llm_denormalized": "{\"candidates\": [{\"content\": {\"role\": \"model\"}, \"finishReason\": \"MAX_TOKENS\", \"index\": 0}], \"usageMetadata\": {\"promptTokenCount\": 30, \"totalTokenCount\": 541, \"promptTokensDetails\": [{\"modality\": \"TEXT\", \"tokenCount\": 30}], \"thoughtsTokenCount\": 511}, \"modelVersion\": \"gemini-2.5-flash\", \"responseId\": \"TAX3aNq2IoqY1e8PxerT-Qc\"}",
+  "validation": {
+    "run_id": "20251021_040007",
+    "anonymized_validation": {
+      "passed": true,
+      "pii_detected": 0,
+      "detections": [],
+      "message": "No PII detected ✅"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "PASS ✅"
+  }
+}

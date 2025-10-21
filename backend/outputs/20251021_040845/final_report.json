@@ -1,0 +1,79 @@
+{
+  "ok": true,
+  "run_id": "20251021_040845",
+  "detections": [
+    {
+      "type": "NAME",
+      "value": "Customer Report",
+      "start": 0,
+      "end": 15,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    },
+    {
+      "type": "NAME",
+      "value": "John Doe",
+      "start": 35,
+      "end": 43,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    },
+    {
+      "type": "EMAIL",
+      "value": "john.doe@example.com",
+      "start": 57,
+      "end": 77,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    },
+    {
+      "type": "PHONE",
+      "value": "+1-202-555-0183",
+      "start": 101,
+      "end": 116,
+      "confidence": 0.88,
+      "rule": "phone_regex"
+    },
+    {
+      "type": "PHONE",
+      "value": "4532 9876 5432",
+      "start": 143,
+      "end": 157,
+      "confidence": 0.88,
+      "rule": "phone_regex"
+    }
+  ],
+  "anonymized_text": "PSEUDO_a60c4fad1b34:\nHello, my name is PSEUDO_161b33881db7. My email is PSEUDO_fb0b773de846 and my phone number is PSEUDO_7de8eed7d5c9.\nMy credit card number is PSEUDO_fde156b22748 1098",
+  "llm_text": "Hello, my name is [REDACTED_NAME]. My email is [REDACTED_EMAIL] and my phone number is [REDACTED_PHONE_NUMBER].\nMy credit card number is [REDACTED_CREDIT_CARD_NUMBER].",
+  "llm_denormalized": "Hello, my name is [REDACTED_NAME]. My email is [REDACTED_EMAIL] and my phone number is [REDACTED_PHONE_NUMBER].\nMy credit card number is [REDACTED_CREDIT_CARD_NUMBER].",
+  "validation": {
+    "run_id": "20251021_040845",
+    "anonymized_validation": {
+      "passed": false,
+      "pii_detected": 1,
+      "detections": [
+        {
+          "type": "PHONE",
+          "value": "2748 1098",
+          "start": 176,
+          "end": 185,
+          "confidence": 0.88,
+          "rule": "phone_regex"
+        }
+      ],
+      "message": "1 PII instances still present ❌"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "FAIL ❌"
+  }
+}

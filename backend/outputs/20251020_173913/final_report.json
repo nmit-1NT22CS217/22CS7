@@ -1,0 +1,78 @@
+{
+  "ok": true,
+  "run_id": "20251020_173913",
+  "detections": [
+    {
+      "type": "NAME",
+      "value": "Michael Scott\nManager",
+      "start": 10,
+      "end": 31,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    },
+    {
+      "type": "NAME",
+      "value": "Dwight Schrute\nContact",
+      "start": 33,
+      "end": 55,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    },
+    {
+      "type": "EMAIL",
+      "value": "michael.scott@dundermifflin.com",
+      "start": 57,
+      "end": 88,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    },
+    {
+      "type": "NAME",
+      "value": "Emergency Number",
+      "start": 89,
+      "end": 105,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    },
+    {
+      "type": "PHONE",
+      "value": "+1-607-222-3333",
+      "start": 107,
+      "end": 122,
+      "confidence": 0.88,
+      "rule": "phone_regex"
+    },
+    {
+      "type": "NAME",
+      "value": "Office Location",
+      "start": 123,
+      "end": 138,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    }
+  ],
+  "anonymized_text": "Employee: PSEUDO_0de21aa4581e: PSEUDO_fa11579224fb: PSEUDO_87b5e426b3f6\nPSEUDO_17e1e611f6a3: PSEUDO_23a2686b2d46\nPSEUDO_2d214d8fc7f9: Scranton, Pennsylvania",
+  "llm_text": "[MOCK RESPONSE] Model gemini-1.5-flash received 245 characters.",
+  "llm_denormalized": "[MOCK RESPONSE] Model gemini-1.5-flash received 245 characters.",
+  "validation": {
+    "run_id": "20251020_173913",
+    "anonymized_validation": {
+      "passed": true,
+      "pii_detected": 0,
+      "detections": [],
+      "message": "No PII detected ✅"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "PASS ✅"
+  }
+}

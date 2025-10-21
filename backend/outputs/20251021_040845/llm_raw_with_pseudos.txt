@@ -1,0 +1,2 @@
+Hello, my name is [REDACTED_NAME]. My email is [REDACTED_EMAIL] and my phone number is [REDACTED_PHONE_NUMBER].
+My credit card number is [REDACTED_CREDIT_CARD_NUMBER].

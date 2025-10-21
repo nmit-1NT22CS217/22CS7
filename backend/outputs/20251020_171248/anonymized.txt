@@ -1,0 +1,3 @@
+Hi, this is Emily from FinServe. Your recent transaction of $250 at "TechWorld" has been flagged.
+Please verify your card ending in 9876. 
+If this wasn’t you, contact us immediately at PSEUDO_f372add791f9 or call PSEUDO_be6804e68001.

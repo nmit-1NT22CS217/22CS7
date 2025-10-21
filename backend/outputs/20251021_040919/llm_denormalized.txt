@@ -1,0 +1,3 @@
+The PSEUDO_ identifiers in the text are:
+*   `Customer Report`
+*   `John Doe`

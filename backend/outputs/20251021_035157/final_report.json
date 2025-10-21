@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "run_id": "20251021_035157",
+  "detections": [
+    {
+      "type": "EMAIL",
+      "value": "yashascraju1@gmail.com",
+      "start": 3,
+      "end": 25,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    }
+  ],
+  "anonymized_text": "hi PSEUDO_73b92c0489d9",
+  "llm_text": "{\n  \"summary\": \"No report content was provided for analysis. The input consisted solely of a greeting and an anonymized identifier.\",\n  \"recommendations\": [\n    \"Please provide the actual anonymized report content for analysis.\",\n    \"Ensure the input contains relevant data or text for the AI data analyst to process.\"\n  ],\n  \"confidence\": 0.0\n}",
+  "llm_json": {
+    "summary": "No report content was provided for analysis. The input consisted solely of a greeting and an anonymized identifier.",
+    "recommendations": [
+      "Please provide the actual anonymized report content for analysis.",
+      "Ensure the input contains relevant data or text for the AI data analyst to process."
+    ],
+    "confidence": 0.0
+  },
+  "llm_denormalized": "{\n  \"summary\": \"No report content was provided for analysis. The input consisted solely of a greeting and an anonymized identifier.\",\n  \"recommendations\": [\n    \"Please provide the actual anonymized report content for analysis.\",\n    \"Ensure the input contains relevant data or text for the AI data analyst to process.\"\n  ],\n  \"confidence\": 0.0\n}",
+  "validation": {
+    "run_id": "20251021_035157",
+    "anonymized_validation": {
+      "passed": true,
+      "pii_detected": 0,
+      "detections": [],
+      "message": "No PII detected ✅"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "PASS ✅"
+  }
+}

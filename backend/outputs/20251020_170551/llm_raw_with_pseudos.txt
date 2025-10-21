@@ -1,0 +1,1 @@
+[MOCK RESPONSE] Model gemini-1.5-flash received 224 characters.

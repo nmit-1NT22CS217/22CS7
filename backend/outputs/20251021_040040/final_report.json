@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "run_id": "20251021_040040",
+  "detections": [
+    {
+      "type": "EMAIL",
+      "value": "yashascraju1@gmail.com",
+      "start": 8,
+      "end": 30,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    }
+  ],
+  "anonymized_text": "Hi, I’m PSEUDO_73b92c0489d9",
+  "llm_text": "Hello PSEUDO_73b92c0489d9! Nice to meet you.\n\nHow can I help you today?",
+  "llm_denormalized": "Hello yashascraju1@gmail.com! Nice to meet you.\n\nHow can I help you today?",
+  "validation": {
+    "run_id": "20251021_040040",
+    "anonymized_validation": {
+      "passed": true,
+      "pii_detected": 0,
+      "detections": [],
+      "message": "No PII detected ✅"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "PASS ✅"
+  }
+}

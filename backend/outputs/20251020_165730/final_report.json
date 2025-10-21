@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "run_id": "20251020_165730",
+  "detections": [
+    {
+      "type": "EMAIL",
+      "value": "yashascraju1@gmail.com",
+      "start": 26,
+      "end": 48,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    },
+    {
+      "type": "PHONE",
+      "value": "11111111",
+      "start": 79,
+      "end": 87,
+      "confidence": 0.88,
+      "rule": "phone_regex"
+    }
+  ],
+  "anonymized_text": "hi i am yashas with email PSEUDO_73b92c0489d9 and i am here with card umber PSEUDO_00be7762c9fd11",
+  "llm_text": "[MOCK RESPONSE] Model gemini-1.5-flash received 186 characters.",
+  "llm_denormalized": "[MOCK RESPONSE] Model gemini-1.5-flash received 186 characters.",
+  "validation": {
+    "run_id": "20251020_165730",
+    "anonymized_validation": {
+      "passed": true,
+      "pii_detected": 0,
+      "detections": [],
+      "message": "No PII detected ✅"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "PASS ✅"
+  }
+}

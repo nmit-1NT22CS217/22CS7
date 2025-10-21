@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "run_id": "20251021_040919",
+  "detections": [
+    {
+      "type": "NAME",
+      "value": "Customer Report",
+      "start": 0,
+      "end": 15,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    },
+    {
+      "type": "NAME",
+      "value": "John Doe",
+      "start": 35,
+      "end": 43,
+      "confidence": 0.45,
+      "rule": "name_heuristic"
+    }
+  ],
+  "anonymized_text": "PSEUDO_a60c4fad1b34:\nHello, my name is PSEUDO_161b33881db7.",
+  "llm_text": "The PSEUDO_ identifiers in the text are:\n*   `PSEUDO_a60c4fad1b34`\n*   `PSEUDO_161b33881db7`",
+  "llm_denormalized": "The PSEUDO_ identifiers in the text are:\n*   `Customer Report`\n*   `John Doe`",
+  "validation": {
+    "run_id": "20251021_040919",
+    "anonymized_validation": {
+      "passed": true,
+      "pii_detected": 0,
+      "detections": [],
+      "message": "No PII detected ✅"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "PASS ✅"
+  }
+}

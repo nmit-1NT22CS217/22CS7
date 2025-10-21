@@ -1,0 +1,39 @@
+{
+  "ok": true,
+  "run_id": "20251021_031307",
+  "detections": [
+    {
+      "type": "EMAIL",
+      "value": "yashascraju1@gmail.com",
+      "start": 0,
+      "end": 22,
+      "confidence": 0.98,
+      "rule": "email_regex"
+    }
+  ],
+  "anonymized_text": "PSEUDO_73b92c0489d9",
+  "llm_text": "{\n  \"summary\": \"No report content was provided for analysis. The input 'PSEUDO_73b92c0489d9' appears to be a placeholder or an identifier, not an actual data report.\",\n  \"recommendations\": [\n    \"Please provide the full anonymized report content to enable a proper data analysis.\",\n    \"Clarify if 'PSEUDO_73b92c0489d9' is meant to reference",
+  "llm_json": null,
+  "llm_denormalized": "{\n  \"summary\": \"No report content was provided for analysis. The input 'yashascraju1@gmail.com' appears to be a placeholder or an identifier, not an actual data report.\",\n  \"recommendations\": [\n    \"Please provide the full anonymized report content to enable a proper data analysis.\",\n    \"Clarify if 'yashascraju1@gmail.com' is meant to reference",
+  "validation": {
+    "run_id": "20251021_031307",
+    "anonymized_validation": {
+      "passed": true,
+      "pii_detected": 0,
+      "detections": [],
+      "message": "No PII detected ✅"
+    },
+    "denormalized_validation": {
+      "passed": true,
+      "remaining_pseudos": {},
+      "message": "No pseudonyms remaining ✅"
+    },
+    "pseudomap_validation": {
+      "passed": true,
+      "invalid_entries": [],
+      "duplicate_pseudonyms": [],
+      "message": "Mapping integrity OK ✅"
+    },
+    "overall_status": "PASS ✅"
+  }
+}
