@@ -210,3 +210,189 @@ This backend ensures **privacy-preserving AI processing** by:
 
 It’s designed to be **modular**, **traceable**, and **compliant-ready** — making it ideal for any enterprise-level or research-grade data processing workflow.
 
+
+
+
+
+
+# 🧠 Algorithms & Logic Overview
+
+Your backend follows a structured **pipeline-based design**, where each step uses a specific algorithm or rule-based method to transform the text safely and intelligently.
+
+---
+
+## 1️⃣ **PII Detection Algorithm**
+
+**📍 File:** `scripts/detect_pii.py`
+**🎯 Purpose:** Identify personally identifiable information (PII) in user input text.
+
+**⚙️ Technique Used:**
+
+* **Regex-based pattern matching** for structured PII:
+
+  * Emails → `[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}`
+  * Phones → `\+?\d[\d\s-]{7,}`
+  * Credit Cards → `(?:\d[ -]*?){13,16}`
+  * SSN → `\d{3}-\d{2}-\d{4}`
+* **Keyword-based name detection** using capitalized word heuristics (for names/locations).
+* Confidence scoring (0.0–1.0) assigned per detection type.
+
+**🧩 Output:**
+List of detected entities →
+`[{ "type": "EMAIL", "value": "john.doe@example.com", "confidence": 0.98 }, ...]`
+
+---
+
+## 2️⃣ **Pseudonymization / Anonymization Algorithm**
+
+**📍 File:** `scripts/anonymize.py`
+**🎯 Purpose:** Replace all detected PII with unique pseudonyms like `PSEUDO_xxxxx`.
+
+**⚙️ Technique Used:**
+
+* **Hash-based pseudonym generation:**
+
+  * Uses an MD5/SHA-like hash of each PII value (truncated for readability).
+  * Each detection is replaced with `PSEUDO_<hash>`.
+* Ensures **consistency** — the same PII always maps to the same pseudonym.
+* Replacements are done using **non-overlapping regex substitution** to avoid conflicts.
+
+**🧩 Example:**
+
+```
+Input: "My email is john.doe@example.com"
+Output: "My email is PSEUDO_fb0b773de846"
+```
+
+---
+
+## 3️⃣ **Pseudonym Mapping Algorithm**
+
+**📍 File:** `scripts/pseudomap.py`
+**🎯 Purpose:** Store and manage the mapping between original PII and pseudonyms.
+
+**⚙️ Technique Used:**
+
+* Generates a **run_id** for each analysis (timestamp-based unique ID).
+* Creates a **key-value mapping**:
+
+  ```json
+  {
+    "john.doe@example.com": "PSEUDO_fb0b773de846",
+    "Jane Smith": "PSEUDO_76c7f44c8e62"
+  }
+  ```
+* Stored as JSON under `outputs/<run_id>/map.json`.
+
+**🧩 Use Case:** Required later for denormalization.
+
+---
+
+## 4️⃣ **LLM Invocation Logic**
+
+**📍 File:** `scripts/llm_client.py`
+**🎯 Purpose:** Send anonymized text to Gemini API (or mock mode) and fetch results.
+
+**⚙️ Technique Used:**
+
+* Uses **HTTP REST request** to Gemini endpoint:
+
+  ```
+  POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+  ```
+* Payload follows **Google Generative Language Spec**:
+
+  ```json
+  { "contents": [{ "role": "user", "parts": [{ "text": "<anonymized_text>" }] }] }
+  ```
+* Implements:
+
+  * **Retries with exponential backoff** (for 429, 5xx)
+  * **Response parsing** for different formats (text or JSON)
+  * **Code fence cleaning** (` ```json ... ``` ` removal)
+
+**🧩 Output:**
+Text response from Gemini model.
+
+---
+
+## 5️⃣ **Denormalization Algorithm**
+
+**📍 File:** `scripts/denormalize.py`
+**🎯 Purpose:** Replace pseudonyms in LLM output back with original sensitive data.
+
+**⚙️ Technique Used:**
+
+* Loads mapping file (`map.json`) from the current run.
+* Iteratively scans the LLM text and replaces all `PSEUDO_xxx` keys with their real values.
+* Backup is created before overwrite for safety.
+* Handles multiple pseudonyms in large texts efficiently.
+
+**🧩 Example:**
+
+```
+LLM Output: "Hello PSEUDO_161b33881db7!"
+Restored: "Hello John Doe!"
+```
+
+---
+
+## 6️⃣ **Validation Algorithm**
+
+**📍 File:** `scripts/validation.py`
+**🎯 Purpose:** Ensure that no PII remains in anonymized text and that denormalization was correct.
+
+**⚙️ Technique Used:**
+
+* Runs detection again on both anonymized and final outputs.
+* Confirms:
+
+  * No original PII remains in anonymized text ✅
+  * All pseudonyms correctly replaced in denormalized output ✅
+  * Checks consistency of counts and mapping integrity.
+* Produces a **status report** (PASS / FAIL).
+
+**🧩 Example Output:**
+
+```json
+{
+  "overall_status": "PASS",
+  "checks": {
+    "no_pii_leak": true,
+    "all_pseudonyms_resolved": true
+  }
+}
+```
+
+---
+
+## 7️⃣ **Utility Functions**
+
+**📍 File:** `scripts/utils.py`
+**🎯 Purpose:** Support core algorithms with common tools.
+
+**Includes:**
+
+* `get_logger()` → Standardized colored logging
+* `ensure_dir()` → Auto-create output folders
+* `write_text_file()` / `write_json_file()` → Reliable file persistence
+
+---
+
+# 🧭 Summary Table
+
+| Step | File           | Algorithm Type         | Goal                           |
+| ---- | -------------- | ---------------------- | ------------------------------ |
+| 1    | detect_pii.py  | Regex + Heuristics     | Find PII (email, phone, etc.)  |
+| 2    | anonymize.py   | Hash-based Replacement | Mask sensitive data            |
+| 3    | pseudomap.py   | Mapping Table          | Store pseudonym links          |
+| 4    | llm_client.py  | REST API Request       | Send anonymized text to Gemini |
+| 5    | denormalize.py | Reverse Mapping        | Restore original values        |
+| 6    | validation.py  | Verification Checks    | Ensure data privacy integrity  |
+| 7    | utils.py       | Helper Tools           | Logging & file ops             |
+
+---
+
+
+
+
