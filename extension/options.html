@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PII Anonymizer - Settings</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-secondary);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="url"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-help {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-color);
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        .status.success {
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .status.error {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .status.checking {
+            background: #fefce8;
+            color: #854d0e;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .info-box h4 {
+            font-size: 14px;
+            color: #1e40af;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            font-size: 13px;
+            color: #1e40af;
+            line-height: 1.5;
+        }
+
+        .info-box code {
+            background: #dbeafe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Settings</h1>
+            <p>Configure your extension preferences</p>
+        </header>
+
+        <div class="card">
+            <h2>API Configuration</h2>
+
+            <div class="form-group">
+                <label for="apiUrl">Backend API URL</label>
+                <input type="url" id="apiUrl" placeholder="https://your-deployed-api.onrender.com">
+                <p class="form-help">Enter the URL of your deployed PII Anonymizer backend</p>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" id="testBtn">Test Connection</button>
+                <button class="btn btn-primary" id="saveBtn">Save Settings</button>
+            </div>
+
+            <div id="statusContainer"></div>
+
+        </div>
+
+        <div class="card">
+            <h2>Default Settings</h2>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="autoLlm">
+                    Enable LLM processing by default
+                </label>
+                <p class="form-help">When checked, automatically process anonymized text with LLM</p>
+            </div>
+
+            <div class="form-group">
+                <label for="defaultMode">Default Anonymization Mode</label>
+                <select id="defaultMode"
+                    style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <option value="pseudonymize">Pseudonymize (Reversible)</option>
+                    <option value="mask">Mask (Partial Hide)</option>
+                    <option value="replace">Replace (Labels)</option>
+                </select>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" id="resetBtn">Reset to Defaults</button>
+                <button class="btn btn-primary" id="saveSettingsBtn">Save Preferences</button>
+            </div>
+        </div>
+
+        <footer>
+            <p>PII Anonymizer Extension v1.0.0 | <a href="https://github.com/your-repo" target="_blank">GitHub</a></p>
+        </footer>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+
+</html>

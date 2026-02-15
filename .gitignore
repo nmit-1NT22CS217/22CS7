@@ -1,0 +1,29 @@
+@"
+# Environment and secrets
+.env.local
+*.env
+
+# Data files
+mappings.enc
+*.enc
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+"@ | Out-File -FilePath .gitignore -Encoding utf8

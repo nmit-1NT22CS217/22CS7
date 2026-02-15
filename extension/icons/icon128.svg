@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <rect width="128" height="128" rx="24" fill="#4f46e5" />
+  <path d="M64 32C54.1 32 46 40.1 46 50V58H38C34.7 58 32 60.7 32 64V90C32 93.3 34.7 96 38 96H90C93.3 96 96 93.3 96 90V64C96 60.7 93.3 58 90 58H82V50C82 40.1 73.9 32 64 32ZM54 50C54 44.5 58.5 40 64 40C69.5 40 74 44.5 74 50V58H54V50ZM64 68C67.3 68 70 70.7 70 74C70 76.2 68.8 78.1 67 79.2V86H61V79.2C59.2 78.1 58 76.2 58 74C58 70.7 60.7 68 64 68Z" fill="white" />
+  <text x="64" y="118" text-anchor="middle" font-family="Arial" font-size="14" fill="white" font-weight="bold">PII</text>
+</svg>
