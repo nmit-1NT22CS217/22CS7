@@ -1,31 +1,7 @@
 services:
   - type: web
     name: pii-anonymizer-api
-    runtime: python
-    pythonVersion: 3.10.13
-    region: oregon
+    env: docker
     plan: free
-
-    buildCommand: |
-      pip install --upgrade pip
-      pip install -r requirements.txt
-      python -m spacy download en_core_web_sm
-
-    startCommand: gunicorn app:app
-
-    envVars:
-      - key: FLASK_ENV
-        value: production
-      - key: FLASK_DEBUG
-        value: "False"
-      - key: ENCRYPTION_KEY
-        sync: false
-      - key: GROQ_API_KEY
-        sync: false
-      - key: GROQ_MODEL
-        value: llama-3.3-70b-versatile
-      - key: ALLOWED_ORIGINS
-        value: "chrome-extension://*,https://*.github.io"
-
-    healthCheckPath: /api/health
+    region: oregon
     autoDeploy: true
