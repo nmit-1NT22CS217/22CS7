@@ -8,16 +8,12 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 
 try:
-    import easyocr
     import fitz
     from PIL import Image
-    import numpy as np
-
-    OCR_READER = None
+    import pytesseract
     OCR_AVAILABLE = True
 except ImportError:
     OCR_AVAILABLE = False
-    OCR_READER = None
 
 
 def ocr_results_to_text(results):
@@ -73,10 +69,8 @@ if allowed_origins_env:
 else:
     CORS(app)
 
-OCR_LANGS = [lang.strip() for lang in os.getenv('OCR_LANGS', 'en').split(',') if lang.strip()]
-
-if OCR_AVAILABLE:
-    OCR_READER = easyocr.Reader(OCR_LANGS, gpu=False)
+OCR_LANGS = [lang.strip() for lang in os.getenv('OCR_LANGS', 'eng').split(',') if lang.strip()]
+TESS_LANG = "+".join(OCR_LANGS) if OCR_LANGS else "eng"
 
 
 @app.route('/')
@@ -109,17 +103,15 @@ def ocr_file():
         try:
             if lower.endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.tiff')):
                 image = Image.open(io.BytesIO(data)).convert('RGB')
-                arr = np.array(image)
-                results = OCR_READER.readtext(arr)
-                combined_text.append(ocr_results_to_text(results))
+                text = pytesseract.image_to_string(image, lang=TESS_LANG)
+                combined_text.append(text.strip())
             elif lower.endswith('.pdf'):
                 doc = fitz.open(stream=data, filetype='pdf')
                 for page in doc:
                     pix = page.get_pixmap()
                     img = Image.frombytes('RGB', [pix.width, pix.height], pix.samples)
-                    arr = np.array(img)
-                    results = OCR_READER.readtext(arr)
-                    combined_text.append(ocr_results_to_text(results))
+                    text = pytesseract.image_to_string(img, lang=TESS_LANG)
+                    combined_text.append(text.strip())
             else:
                 continue
         except Exception as e:
