@@ -12,4 +12,7 @@ export default defineConfig({
       clientPort: 5173,
     },
   },
+  preview: {
+    allowedHosts: 'all',
+  },
 })
