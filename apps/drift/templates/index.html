@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cognitive Drift Monitoring</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #edf3f8;
+            --panel: #ffffff;
+            --ink: #0f172a;
+            --muted: #475569;
+            --line: #d8e2ed;
+            --brand: #0f766e;
+            --brand2: #0369a1;
+            --warn: #c2410c;
+            --danger: #b91c1c;
+            --ok: #15803d;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(14, 116, 144, 0.09), transparent 32%),
+                radial-gradient(circle at 100% 0%, rgba(15, 118, 110, 0.08), transparent 38%),
+                var(--bg);
+        }
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            display: grid;
+            gap: 12px;
+        }
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+        }
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .hero h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+        .hero p {
+            margin: 6px 0 0 0;
+            color: var(--muted);
+        }
+        .badge {
+            border-radius: 999px;
+            background: #e2e8f0;
+            padding: 7px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px;
+            resize: vertical;
+            font-size: 14px;
+        }
+        button {
+            margin-top: 8px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(120deg, var(--brand), var(--brand2));
+            color: #fff;
+            padding: 9px 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        select {
+            margin-left: 6px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 4px 8px;
+            background: #fff;
+            color: var(--ink);
+        }
+        .error { color: var(--danger); margin: 8px 0 0 0; }
+        .kpis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 9px;
+        }
+        .kpi {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px;
+            background: #fbfdff;
+        }
+        .kpi .label { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+        .kpi .value { font-size: 24px; font-weight: 800; margin-top: 3px; }
+        .kpi .desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .chart {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 12px;
+            min-height: 340px;
+            height: 340px;
+            overflow: hidden;
+        }
+        .chart h3 { margin: 0 0 8px 0; font-size: 14px; }
+        .response {
+            white-space: pre-wrap;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px;
+            max-height: 250px;
+            overflow: auto;
+            background: #f8fafc;
+        }
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 8px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .legend div {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 8px;
+            background: #fcfdff;
+        }
+        .ops-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+        }
+        .table-wrap {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            overflow: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid var(--line);
+            text-align: left;
+            vertical-align: top;
+        }
+        .btn-mini {
+            margin-top: 0;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        .btn-safe {
+            background: linear-gradient(120deg, #15803d, #16a34a);
+        }
+        .btn-drift {
+            background: linear-gradient(120deg, #b91c1c, #dc2626);
+        }
+        .status-pill {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 6px;
+            border: 1px solid transparent;
+        }
+        .status-green {
+            background: #dcfce7;
+            color: #166534;
+            border-color: #86efac;
+        }
+        .status-yellow {
+            background: #fef9c3;
+            color: #854d0e;
+            border-color: #fde047;
+        }
+        .status-red {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+        @media (max-width: 980px) {
+            .grid2 { grid-template-columns: 1fr; }
+            .hero { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <section class="panel hero">
+        <div>
+            <h1>Cognitive Drift Monitoring Dashboard</h1>
+            <p>Detector-first monitoring with semantic shift, distribution tests, change-point evidence, and calibrated risk.</p>
+        </div>
+        {% if analysis %}
+        <div class="badge">Risk: {{ analysis.risk_level|upper }} | Confidence: {{ "%.2f"|format(analysis.confidence_score * 100) }}%</div>
+        {% else %}
+        <div class="badge">Awaiting Analysis</div>
+        {% endif %}
+    </section>
+
+    <section class="panel">
+        <form method="POST">
+            <label for="prompt"><strong>Prompt Input</strong></label>
+            <textarea id="prompt" name="prompt" placeholder="Ask a question or submit text for drift analysis..."></textarea>
+            <button type="submit">Generate + Analyze</button>
+        </form>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    </section>
+
+    {% if analysis %}
+    <section class="panel">
+        <div class="kpis">
+            <div class="kpi"><div class="label">Final Drift</div><div class="value">{{ "%.4f"|format(analysis.drift_score) }}</div><div class="desc">Primary severity score</div></div>
+            <div class="kpi"><div class="label">High-Risk Prob</div><div class="value">{{ "%.2f"|format(analysis.high_risk_probability * 100) }}%</div><div class="desc">Calibrated risk estimate</div></div>
+            <div class="kpi"><div class="label">Confidence</div><div class="value">{{ "%.2f"|format(analysis.confidence_score * 100) }}%</div><div class="desc">Reliability of current estimate</div></div>
+            <div class="kpi"><div class="label">Semantic Drift</div><div class="value">{{ "%.4f"|format(analysis.semantic_drift) }}</div><div class="desc">Meaning shift vs baseline</div></div>
+            <div class="kpi"><div class="label">MMD p-value</div><div class="value">{{ "%.4f"|format(analysis.mmd_pvalue) }}</div><div class="desc">Lower means stronger evidence of drift</div></div>
+            <div class="kpi"><div class="label">Domain AUC Shift</div><div class="value">{{ "%.4f"|format(analysis.domain_auc_shift) }}</div><div class="desc">Reference/current separability</div></div>
+            <div class="kpi"><div class="label">Page-Hinkley</div><div class="value">{{ "%.4f"|format(analysis.page_hinkley_score) }}</div><div class="desc">Persistent change pressure</div></div>
+            <div class="kpi"><div class="label">Anomaly</div><div class="value">{{ "%.4f"|format(analysis.anomaly_score) }}</div><div class="desc">Outlier intensity</div></div>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if response %}
+    <section class="panel">
+        <h3 style="margin:0 0 8px 0;">Latest LLM Response</h3>
+        <div class="response">{{ response }}</div>
+    </section>
+    {% endif %}
+
+    {% if history_points and history_points|length > 0 %}
+    <section class="panel">
+        <div class="ops-row" style="margin-bottom: 12px;">
+            <label class="muted">Timeline Window
+                <select id="windowSelect">
+                    <option value="10">Last 10</option>
+                    <option value="20" selected>Last 20</option>
+                    <option value="40">Last 40</option>
+                    <option value="80">Last 80</option>
+                </select>
+            </label>
+            <label class="muted">NLP View
+                <select id="nlpModeSelect">
+                    <option value="primary" selected>Primary</option>
+                    <option value="all">All Signals</option>
+                </select>
+            </label>
+            <label class="muted">Distribution View
+                <select id="distributionModeSelect">
+                    <option value="primary" selected>Primary</option>
+                    <option value="all">All Signals</option>
+                </select>
+            </label>
+            <label class="muted">Time-Series View
+                <select id="timeModeSelect">
+                    <option value="primary" selected>Primary</option>
+                    <option value="all">All Signals</option>
+                </select>
+            </label>
+            <label class="muted">Risk View
+                <select id="riskModeSelect">
+                    <option value="primary" selected>Primary</option>
+                    <option value="all">All Signals</option>
+                </select>
+            </label>
+        </div>
+        <div class="chart">
+            <h3>Drift Control Chart (Risk + Alert Bands)</h3>
+            <canvas id="controlChart"></canvas>
+        </div>
+
+        <div class="grid2" style="margin-top:12px;">
+            <div class="chart">
+                <h3>NLP/Text Signals</h3>
+                <canvas id="nlpChart"></canvas>
+            </div>
+            <div class="chart">
+                <h3>Distribution Drift Evidence</h3>
+                <canvas id="distributionChart"></canvas>
+            </div>
+        </div>
+
+        <div class="grid2" style="margin-top:12px;">
+            <div class="chart">
+                <h3>Time-Series Change Detection</h3>
+                <canvas id="timeChart"></canvas>
+            </div>
+            <div class="chart">
+                <h3>Risk & Anomaly Outputs</h3>
+                <canvas id="riskChart"></canvas>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="panel">
+        <h3 style="margin:0 0 8px 0;">Model Operations</h3>
+        <div class="ops-row">
+            <button id="trainModelBtn" type="button" {% if not (label_stats and label_stats.ready_for_training) %}disabled{% endif %}>Train / Refresh Model</button>
+            <span id="trainStatus" class="muted">
+                {% if model_status and model_status.available %}
+                Model ready
+                {% else %}
+                Model not trained yet
+                {% endif %}
+            </span>
+        </div>
+        <div class="muted" id="metricsSummary">
+            {% if model_status and model_status.metrics %}
+            Model quality: AUC {{ "%.3f"|format(model_status.metrics.roc_auc) }}, F1 {{ "%.3f"|format(model_status.metrics.f1) }}. Trained on {{ model_status.metrics.samples }} samples (manual {{ model_status.metrics.manual_labels or 0 }}, auto {{ model_status.metrics.weak_labels or 0 }}) at {{ model_status.metrics.trained_at }}.
+            {% else %}
+            Model not trained yet. System will train from your historical records plus recent records using trusted auto-labels.
+            {% endif %}
+        </div>
+        <div class="muted" id="labelStats" style="margin-top:6px;">
+            {% if label_stats %}
+            Training data ready: {{ label_stats.labeled_total }} usable samples (manual {{ label_stats.manual_labeled_total }} + auto {{ label_stats.labeled_total - label_stats.manual_labeled_total }}). Safe {{ label_stats.negatives }}, Drift {{ label_stats.positives }}.
+            {% if label_stats.ready_for_training %}
+            <span class="status-pill status-green">READY</span>
+            {% elif label_stats.labeled_total >= (label_stats.recommended_min_samples // 2) %}
+            <span class="status-pill status-yellow">IMBALANCED / PARTIAL</span>
+            {% else %}
+            <span class="status-pill status-red">NOT READY</span>
+            {% endif %}
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="panel">
+        <h3 style="margin:0 0 8px 0;">Interpretation Guide</h3>
+        <div class="legend">
+            <div><strong>Control chart:</strong> Use <code>0.58</code> as high-risk and <code>0.78</code> as critical regime thresholds.</div>
+            <div><strong>MMD + p-value:</strong> High MMD with low p-value indicates statistically meaningful distribution drift.</div>
+            <div><strong>Domain AUC shift:</strong> Near 0 means reference and recent responses look similar; higher means they are separable.</div>
+            <div><strong>Page-Hinkley:</strong> Captures persistent small changes that single-point anomaly scores can miss.</div>
+        </div>
+    </section>
+</div>
+
+<script>
+async function trainModel() {
+    const status = document.getElementById("trainStatus");
+    const metrics = document.getElementById("metricsSummary");
+    const labelStats = document.getElementById("labelStats");
+    status.textContent = "Training model...";
+    try {
+        const res = await fetch("/train-model", { method: "POST" });
+        const body = await res.json();
+        if (!res.ok) {
+            status.textContent = `Training failed: ${body.stderr || body.error || "unknown error"}`;
+            return;
+        }
+        status.textContent = "Training complete";
+        const m = (body.model_status || {}).metrics;
+        if (m) {
+            metrics.textContent = `AUC ${Number(m.roc_auc || 0).toFixed(3)}, F1 ${Number(m.f1 || 0).toFixed(3)}, samples ${m.samples || 0}, trained ${m.trained_at || "n/a"}`;
+        } else {
+            metrics.textContent = "Training finished, but metrics unavailable.";
+        }
+        await refreshLabelStats(labelStats);
+    } catch (err) {
+        status.textContent = `Training failed: ${err.message}`;
+    }
+}
+
+async function refreshLabelStats(node) {
+    if (!node) return;
+    const trainBtn = document.getElementById("trainModelBtn");
+    try {
+        const res = await fetch("/model-status");
+        const body = await res.json();
+        const s = body.label_stats || {};
+        const total = Number(s.labeled_total || 0);
+        const positives = Number(s.positives || 0);
+        const negatives = Number(s.negatives || 0);
+        const manual = Number(s.manual_labeled_total || 0);
+        const auto = Math.max(0, total - manual);
+        const minSamples = Number(s.recommended_min_samples || 60);
+        const ready = Boolean(s.ready_for_training);
+        let statusClass = "status-red";
+        let statusText = "NOT READY";
+        if (ready) {
+            statusClass = "status-green";
+            statusText = "READY";
+        } else if (total >= Math.floor(minSamples / 2)) {
+            statusClass = "status-yellow";
+            statusText = "IMBALANCED / PARTIAL";
+        }
+        node.innerHTML = `Training data ready: ${total} usable samples (manual ${manual} + auto ${auto}). Safe ${negatives}, Drift ${positives}. <span class="status-pill ${statusClass}">${statusText}</span>`;
+        if (trainBtn) trainBtn.disabled = !ready;
+    } catch (err) {
+        node.textContent = `Label stats unavailable: ${err.message}`;
+        if (trainBtn) trainBtn.disabled = true;
+    }
+}
+
+document.getElementById("trainModelBtn")?.addEventListener("click", trainModel);
+</script>
+
+{% if history_points and history_points|length > 0 %}
+<script>
+const rawHistory = {{ history_points | tojson }};
+let controlChartRef = null;
+let nlpChartRef = null;
+let distributionChartRef = null;
+let timeChartRef = null;
+let riskChartRef = null;
+
+const rollingMean = (arr, w = 7) => arr.map((_, i) => {
+    const s = Math.max(0, i - w + 1);
+    const chunk = arr.slice(s, i + 1).filter((v) => typeof v === "number");
+    if (!chunk.length) return null;
+    return chunk.reduce((a, b) => a + b, 0) / chunk.length;
+});
+
+const commonOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },
+    scales: {
+        x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
+        y: { beginAtZero: true, max: 1.05 }
+    },
+    plugins: {
+        tooltip: {
+            callbacks: {
+                afterTitle: (items) => `Time: ${timestamps[items[0].dataIndex]}`
+            }
+        }
+    }
+};
+
+function getWindowedHistory() {
+    const windowSize = Number(document.getElementById("windowSelect")?.value || 20);
+    return rawHistory.slice(-windowSize);
+}
+
+function renderCharts() {
+    const history = getWindowedHistory();
+    const labels = history.map((_, i) => `T${i + 1}`);
+    const timestamps = history.map((h) => h.timestamp || "n/a");
+    const metric = (key) => history.map((h) => (typeof h[key] === "number" ? h[key] : null));
+
+    const drift = metric("drift_score");
+    const highRiskProb = metric("high_risk_probability");
+    const confidence = metric("confidence_score");
+    const anomaly = metric("anomaly_score");
+    const semantic = metric("semantic_drift");
+    const sentiment = metric("sentiment_drift");
+    const lexical = metric("lexical_drift");
+    const js = metric("js_divergence");
+    const mmd = metric("mmd_drift");
+    const mmdPInv = metric("mmd_pvalue_inv");
+    const historical = metric("historical_drift");
+    const domainAuc = metric("domain_auc_shift");
+    const trend = metric("trend_shift");
+    const ewma = metric("ewma_score");
+    const pageHinkley = metric("page_hinkley_score");
+    const volatility = metric("volatility_risk");
+
+    const driftMA = rollingMean(drift, 7);
+    const warnBand = drift.map(() => 0.58);
+    const criticalBand = drift.map(() => 0.78);
+
+    if (controlChartRef) controlChartRef.destroy();
+    if (nlpChartRef) nlpChartRef.destroy();
+    if (distributionChartRef) distributionChartRef.destroy();
+    if (timeChartRef) timeChartRef.destroy();
+    if (riskChartRef) riskChartRef.destroy();
+
+    controlChartRef = new Chart(document.getElementById("controlChart"), {
+        type: "line",
+        data: {
+            labels,
+            datasets: [
+                { label: "Final Drift", data: drift, borderColor: "#0f766e", backgroundColor: "rgba(15,118,110,0.14)", fill: true, borderWidth: 2.2, pointRadius: 1.6, tension: 0.25 },
+                { label: "High-Risk Prob", data: highRiskProb, borderColor: "#7c3aed", borderWidth: 2, pointRadius: 0, tension: 0.25 },
+                { label: "7-Point Mean", data: driftMA, borderColor: "#0369a1", borderDash: [6, 3], borderWidth: 1.8, pointRadius: 0, tension: 0.2 },
+                { label: "Warning", data: warnBand, borderColor: "#c2410c", borderDash: [4, 4], borderWidth: 1.4, pointRadius: 0 },
+                { label: "Critical", data: criticalBand, borderColor: "#b91c1c", borderDash: [2, 3], borderWidth: 1.4, pointRadius: 0 }
+            ]
+        },
+        options: { ...commonOptions, plugins: { tooltip: { callbacks: { afterTitle: (items) => `Time: ${timestamps[items[0].dataIndex]}` } } } }
+    });
+
+    const nlpMode = document.getElementById("nlpModeSelect")?.value || "primary";
+    const nlpDatasets = [{ label: "Semantic", data: semantic, borderColor: "#0f766e", borderWidth: 2, pointRadius: 0, tension: 0.22 }];
+    if (nlpMode === "all") {
+        nlpDatasets.push(
+            { label: "Sentiment", data: sentiment, borderColor: "#ea580c", borderWidth: 2, pointRadius: 0, tension: 0.22 },
+            { label: "Lexical", data: lexical, borderColor: "#334155", borderWidth: 2, pointRadius: 0, tension: 0.22 }
+        );
+    }
+    nlpChartRef = new Chart(document.getElementById("nlpChart"), { type: "line", data: { labels, datasets: nlpDatasets }, options: commonOptions });
+
+    const distMode = document.getElementById("distributionModeSelect")?.value || "primary";
+    const distDatasets = [
+        { label: "JS", data: js, borderColor: "#0ea5e9", borderWidth: 2, pointRadius: 0, tension: 0.2 },
+        { label: "MMD", data: mmd, borderColor: "#7c3aed", borderWidth: 2, pointRadius: 0, tension: 0.2 }
+    ];
+    if (distMode === "all") {
+        distDatasets.push(
+            { label: "1 - MMD p-value", data: mmdPInv, borderColor: "#b45309", borderWidth: 2, pointRadius: 0, tension: 0.2 },
+            { label: "Historical", data: historical, borderColor: "#475569", borderWidth: 2, pointRadius: 0, tension: 0.2 },
+            { label: "Domain AUC Shift", data: domainAuc, borderColor: "#0d9488", borderWidth: 2, pointRadius: 0, tension: 0.2 }
+        );
+    }
+    distributionChartRef = new Chart(document.getElementById("distributionChart"), { type: "line", data: { labels, datasets: distDatasets }, options: commonOptions });
+
+    const timeMode = document.getElementById("timeModeSelect")?.value || "primary";
+    const timeDatasets = [
+        { label: "Trend", data: trend, borderColor: "#be123c", borderWidth: 2, pointRadius: 0, tension: 0.2 },
+        { label: "Page-Hinkley", data: pageHinkley, borderColor: "#b45309", borderWidth: 2, pointRadius: 0, tension: 0.2 }
+    ];
+    if (timeMode === "all") {
+        timeDatasets.push(
+            { label: "EWMA", data: ewma, borderColor: "#334155", borderWidth: 2, pointRadius: 0, tension: 0.2 },
+            { label: "Volatility", data: volatility, borderColor: "#0369a1", borderWidth: 2, pointRadius: 0, tension: 0.2 }
+        );
+    }
+    timeChartRef = new Chart(document.getElementById("timeChart"), { type: "line", data: { labels, datasets: timeDatasets }, options: commonOptions });
+
+    const riskMode = document.getElementById("riskModeSelect")?.value || "primary";
+    const riskDatasets = [
+        { label: "Final Drift", data: drift, borderColor: "#0f172a", borderWidth: 2.3, pointRadius: 0, tension: 0.2 },
+        { label: "High-Risk Prob", data: highRiskProb, borderColor: "#7c3aed", borderWidth: 2, pointRadius: 0, tension: 0.2 }
+    ];
+    if (riskMode === "all") {
+        riskDatasets.push(
+            { label: "Anomaly", data: anomaly, borderColor: "#dc2626", borderWidth: 2, pointRadius: 0, tension: 0.2 },
+            { label: "Confidence", data: confidence, borderColor: "#0891b2", borderWidth: 2, pointRadius: 0, tension: 0.2 }
+        );
+    }
+    riskChartRef = new Chart(document.getElementById("riskChart"), { type: "line", data: { labels, datasets: riskDatasets }, options: commonOptions });
+}
+
+["windowSelect", "nlpModeSelect", "distributionModeSelect", "timeModeSelect", "riskModeSelect"].forEach((id) => {
+    document.getElementById(id)?.addEventListener("change", renderCharts);
+});
+renderCharts();
+</script>
+{% endif %}
+</body>
+</html>
