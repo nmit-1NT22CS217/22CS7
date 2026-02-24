@@ -12,6 +12,9 @@ try:
     from PIL import Image
     import pytesseract
     OCR_AVAILABLE = True
+    TESSERACT_CMD = os.getenv("TESSERACT_CMD")
+    if TESSERACT_CMD:
+        pytesseract.pytesseract.tesseract_cmd = TESSERACT_CMD
 except ImportError:
     OCR_AVAILABLE = False
 
