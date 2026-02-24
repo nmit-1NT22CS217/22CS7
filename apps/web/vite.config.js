@@ -13,6 +13,6 @@ export default defineConfig({
     },
   },
   preview: {
-    allowedHosts: 'shimmering-clarity-production.up.railway.app',
+    allowedHosts: 'shimmering-clarity-production.up.railway.app', "shimmering-clarity-production.up.railway.app" ,
   },
 })
