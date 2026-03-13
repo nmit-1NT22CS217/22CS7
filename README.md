@@ -2,26 +2,26 @@
 
 A complete, modular Python-Flask application with **enhanced entity detection** that detects and anonymizes Personally Identifiable Information (PII) in text, supports multiple anonymization methods, stores encrypted reversible mappings, and enables deanonymization of LLM responses.
 
-## 🔥 Latest Features (Enhanced)
+## Latest Features (Enhanced)
 
-- **🧠 LLM-Friendly Pseudonymization**: Uses semantic labels (`name_1`, `email_2`, `mobNo_1`) for better LLM understanding
-- **🔍 Complex Entity Detection**: Handles multi-token entities with spaces, punctuation, and line breaks
-- **🏷️ Industry-Standard Labels**: Human-readable entity names following data privacy standards
-- **📊 Detection Analytics**: Preview and statistics for detected entities
-- **🎯 Smart Validation**: Reduced false positives with type-specific validation
+- ** LLM-Friendly Pseudonymization**: Uses semantic labels (`name_1`, `email_2`, `mobNo_1`) for better LLM understanding
+- ** Complex Entity Detection**: Handles multi-token entities with spaces, punctuation, and line breaks
+- ** Industry-Standard Labels**: Human-readable entity names following data privacy standards
+- ** Detection Analytics**: Preview and statistics for detected entities
+- ** Smart Validation**: Reduced false positives with type-specific validation
 
 ## Core Features
 
-- **Enhanced PII Detection**: Advanced spaCy NER + custom patterns + regex for complex entities
-- **Multiple Anonymization Modes**:
-  - **Pseudonymize**: LLM-friendly labels (`name_1`, `email_2`, `physical_address_1`...)
-  - **Mask**: Intelligent partial masking preserving structure (`jo****@email.com`)
-  - **Replace**: Human-friendly entity type labels (`[Person Name]`, `[Email Address]`...)
-- **Complex Entity Support**: Multi-word names, addresses, organizations with internal punctuation
-- **Encrypted Storage**: Secure Fernet encryption for reversible mappings
-- **LLM Integration**: LLM API integration with mock fallback
-- **Deanonymization**: Restore original PII from LLM responses
-- **Web Interface**: Clean, responsive web CLI interface
+- ** Enhanced PII Detection**: Advanced spaCy NER + custom patterns + regex for complex entities
+- ** Multiple Anonymization Modes**:
+  - ** Pseudonymize**: LLM-friendly labels (`name_1`, `email_2`, `physical_address_1`...)
+  - ** Mask**: Intelligent partial masking preserving structure (`jo****@email.com`)
+  - ** Replace**: Human-friendly entity type labels (`[Person Name]`, `[Email Address]`...)
+- ** Complex Entity Support**: Multi-word names, addresses, organizations with internal punctuation
+- ** Encrypted Storage**: Secure Fernet encryption for reversible mappings
+- ** LLM Integration**: LLM API integration with mock fallback
+- ** Deanonymization**: Restore original PII from LLM responses
+- ** Web Interface**: Clean, responsive web CLI interface
 
 ## Requirements
 
@@ -56,22 +56,6 @@ Copy the generated key to your `.env` file.
 cp .env.example .env
 ```
 
-### 5. (Optional) Setup Google Cloud Vision for Cloud-Based OCR
-
-For better OCR performance and reduced memory footprint (important for Render deployment):
-
-1. Create a Google Cloud project and enable Cloud Vision API
-2. Create a service account and download the JSON key
-3. Set the environment variable:
-   ```bash
-   export GCP_CREDENTIALS_JSON='<paste the entire JSON key content here>'
-   ```
-   Or specify a file path:
-   ```bash
-   export GCP_CREDENTIALS_PATH='/path/to/service-account-key.json'
-   ```
-
-📖 See [GCP_OAUTH_SETUP.md](GCP_OAUTH_SETUP.md) for detailed setup instructions.
 
 ### 6. Run the Application
 
@@ -81,7 +65,7 @@ python app.py
 
 ---
 
-## 🌐 Browser Extension
+##  Browser Extension
 
 The PII Anonymizer is also available as a **browser extension** for Chrome, Edge, and other Chromium-based browsers!
 
@@ -93,36 +77,14 @@ The PII Anonymizer is also available as a **browser extension** for Chrome, Edge
 - **History Tracking**: Keep track of your anonymization history
 - **LLM Integration**: Process anonymized text with AI
 
-### Quick Setup
-
-#### Step 1: Deploy the Backend
-
-Deploy the Flask backend to a cloud service:
-
-#### Render (Recommended - Free Tier)
-1. Push code to GitHub
-2. Go to [render.com](https://render.com) → New Web Service
-3. Connect your repository
-4. Set Build Command: `pip install -r requirements.txt && python -m spacy download en_core_web_sm`
-5. Set Start Command: `gunicorn app:app`
-6. Add environment variables:
-   - `ENCRYPTION_KEY`: Your encryption key
-   - `GROQ_API_KEY`: Your Groq API key (optional, for LLM features)
-   - `GCP_CREDENTIALS_JSON`: Your Google Cloud service account JSON key (recommended for OCR)
-7. Deploy!
-
-📖 See [GCP_OAUTH_SETUP.md](GCP_OAUTH_SETUP.md) for how to obtain `GCP_CREDENTIALS_JSON`.
-
-Or use the included `render.yaml` for one-click deployment.
-
-#### Step 2: Install the Extension
+#### Step 1: Install the Extension
 
 1. Open `chrome://extensions/` in your browser
 2. Enable "Developer mode" (top right)
 3. Click "Load unpacked"
 4. Select the `extension/` folder
 
-#### Step 3: Configure
+#### Step 2: Configure
 
 1. Click the extension icon → Settings
 2. Enter your deployed API URL
@@ -136,11 +98,10 @@ Or use the included `render.yaml` for one-click deployment.
 
 This creates `dist/pii-anonymizer-extension.zip` for Chrome Web Store upload.
 
-📖 See [extension/README.md](extension/README.md) for detailed documentation.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 fyp_01/
