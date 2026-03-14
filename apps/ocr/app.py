@@ -538,6 +538,16 @@ def health_check():
     })
 
 
+@ocr_bp.route('/health', methods=['GET'])
+def health_check_bp():
+    """Health check for OCR service via blueprint."""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'ocr',
+        'capabilities': ocr_extractor.get_capabilities()
+    })
+
+
 @app.route('/', methods=['GET'])
 def root():
     """Default root route for platform health checks."""
@@ -558,11 +568,11 @@ if __name__ == '__main__':
     print(f"   Port: {port}")
     print(f"   Host: 0.0.0.0")
 
-    # Register OCR routes when running as a standalone service
-    app.register_blueprint(ocr_bp)
-
     app.run(
         debug=debug_mode,
         host='0.0.0.0',
         port=port
     )
+
+# Register OCR routes when running under WSGI (e.g., gunicorn)
+app.register_blueprint(ocr_bp)
