@@ -28,7 +28,7 @@ A complete, modular Python-Flask application with **enhanced entity detection** 
 - Python 3.8+
 - pip (Python package manager)
 
-**Note:** This project uses built-in Python libraries for encryption (no external cryptography library needed).
+**Note:** This project uses the `cryptography` library for authenticated encryption.
 
 ### 1. Install Dependencies
 
@@ -64,6 +64,75 @@ python app.py
 ```
 
 ---
+
+## End-to-End Flow (Customer Doc → Response)
+
+1. Customer uploads a document (image/PDF/text) or provides raw text via the Web UI or API.
+2. The API service routes OCR requests:
+   - Local OCR (single-service mode), or
+   - Proxy to the OCR service over an encrypted DKE envelope.
+3. OCR service extracts text (PDF text extraction first; image OCR via EasyOCR fallback).
+4. The API service runs PII detection on the extracted text.
+5. The chosen anonymization mode is applied.
+6. Encrypted reversible mappings are stored with TTL.
+7. Optional LLM call is made on anonymized text.
+8. The final response is returned:
+   - Anonymized text
+   - LLM response (if enabled)
+   - Deanonymized response (when reversible mappings exist)
+
+## Encryption Standards and Techniques Used
+
+- **AES-256-GCM (authenticated encryption)** for all stored mappings and payload encryption.
+- **Data Key Encryption (DKE)** for OCR proxy:
+  - Each request generates a one-time data key.
+  - Payload is encrypted with the data key.
+  - The data key is encrypted with the shared master key (`ENCRYPTION_KEY`).
+- **At-rest encryption** for mapping storage (`mappings.enc`) with per-entry TTL.
+- **Transport security** is provided by HTTPS in production (Railway/Cloud), while DKE adds an extra layer even over TLS.
+
+## What Is the Various Detection Mechanism Used
+
+- **spaCy NER** for standard entity recognition.
+- **Regex-based detectors** for structured patterns (emails, phones, IDs, cards, etc.).
+- **Custom pattern rules** to catch multi-token and punctuation-heavy entities.
+- **Context-aware filtering** using LLM classification to keep only relevant PII (optional).
+
+## What Is Various Anonymizing Techniques Used
+
+- **Pseudonymize (reversible):** semantic placeholders like `name_1`, `email_2`.
+- **Mask (irreversible):** partial masking while preserving structure.
+- **Replace (irreversible):** human-friendly labels like `[Email Address]`.
+
+## Multiple Strategies for Diverse Anonymisation
+
+- **Selective Pseudonymization:** only context-relevant PII is anonymized.
+- **Full Anonymization:** all detected PII is anonymized regardless of context.
+- **LLM-safe placeholders:** labels are optimized for downstream LLM comprehension.
+
+## What Kind of Middleware Layer Used
+
+- **API Service** acts as the orchestration layer:
+  - Accepts user input and files
+  - Coordinates OCR and anonymization
+  - Optionally calls LLM
+- **OCR Proxy Blueprint** acts as a secure middleware:
+  - Wraps OCR requests in DKE envelopes
+  - Decrypts OCR responses before returning to clients
+
+## How Reversible Anonymization Is Achieved
+
+- Reversible mappings are stored as encrypted key/value pairs.
+- Each mapping entry is timestamped and expires based on TTL.
+- When LLM responses arrive, mappings are applied in reverse to restore original PII.
+- Users can immediately wipe all mappings via the clear-mappings endpoint.
+
+## How Is This Accessible Interface When Put Into Production
+
+- **Web UI** hosted by the API service (`/`).
+- **REST API endpoints** for programmatic usage (`/api/anonymize`, `/api/ocr/*`, `/api/deanonymize`).
+- **Health endpoints** (`/api/health`, `/health`) for monitoring.
+- **CORS open** for public frontends and cross-domain use.
 
 ##  Browser Extension
 
