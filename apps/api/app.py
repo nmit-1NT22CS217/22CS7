@@ -43,7 +43,13 @@ if not ENCRYPTION_KEY or ENCRYPTION_KEY == b'your_encryption_key_here':
 
 # Decide whether to proxy OCR requests to a remote OCR service (using DKE) or
 # to handle them locally via the built-in OCR blueprint.
-OCR_SERVICE_URL = os.getenv('OCR_SERVICE_URL', '').strip()
+def _normalize_service_url(url: str) -> str:
+    url = (url or '').strip()
+    if url and not url.startswith(('http://', 'https://')):
+        url = 'https://' + url
+    return url
+
+OCR_SERVICE_URL = _normalize_service_url(os.getenv('OCR_SERVICE_URL', '').strip())
 if OCR_SERVICE_URL:
     try:
         from .ocr_proxy import create_ocr_proxy_blueprint
