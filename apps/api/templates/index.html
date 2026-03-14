@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PII-Anonymizer Web-CLI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #222222;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid #333333;
+        }
+
+        .header {
+            background: #2a2a2a;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid #333333;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+            background: #222222;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #f97316;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            transition: border-color 0.3s;
+            color: #e5e5e5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #f97316;
+            background: #1a1a1a;
+        }
+
+        textarea::placeholder {
+            color: #737373;
+        }
+
+        #inputText {
+            min-height: 150px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .radio-group strong {
+            color: #e5e5e5;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 15px;
+            color: #a3a3a3;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 5px;
+            cursor: pointer;
+            accent-color: #f97316;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #f97316;
+            color: white;
+            box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: #ea580c;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.5);
+        }
+
+        .btn-secondary {
+            background: #2a2a2a;
+            color: #e5e5e5;
+            border: 1px solid #404040;
+        }
+
+        .btn-secondary:hover {
+            background: #333333;
+            transform: translateY(-2px);
+            border-color: #525252;
+        }
+
+        .btn-danger {
+            background: #2a2a2a;
+            color: #f97316;
+            border: 1px solid #404040;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: #333333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            border-color: #f97316;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .result-box {
+            background: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-box h3 {
+            color: #f97316;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .result-content {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #404040;
+            min-height: 100px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e5e5e5;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #f97316;
+            font-size: 16px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #404040;
+            border-top: 3px solid #f97316;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            background: #2a2a2a;
+            border: 1px solid #dc2626;
+            color: #fca5a5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .error.active {
+            display: block;
+        }
+
+        .success {
+            background: #2a2a2a;
+            border: 1px solid #f97316;
+            color: #fdba74;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .success.active {
+            display: block;
+        }
+
+        .info-box {
+            background: #2a2a2a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h4 {
+            color: #f97316;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: #a3a3a3;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .sample-text {
+            background: #2a2a2a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sample-text:hover {
+            background: #333333;
+            transform: scale(1.01);
+            border-color: #f97316;
+        }
+
+        .sample-text p {
+            font-size: 14px;
+            color: #f97316;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .sample-text code {
+            display: block;
+            font-size: 13px;
+            color: #a3a3a3;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #404040;
+            font-size: 14px;
+        }
+
+        .stat-label {
+            color: #737373;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            color: #f97316;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* File Upload Styles */
+        .file-upload-section {
+            background: #1a1a1a;
+            border: 2px dashed #404040;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .file-upload-section:hover,
+        .file-upload-section.drag-over {
+            border-color: #f97316;
+            background: #2a2a2a;
+        }
+
+        .file-upload-section input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-icon {
+            font-size: 48px;
+            color: #737373;
+            margin-bottom: 10px;
+        }
+
+        .file-upload-text {
+            color: #a3a3a3;
+            font-size: 14px;
+        }
+
+        .file-upload-text strong {
+            color: #f97316;
+        }
+
+        .file-info {
+            background: #2a2a2a;
+            border: 1px solid #f97316;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        .file-info-name {
+            color: #f97316;
+            font-weight: 600;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+
+        .file-info-meta {
+            color: #737373;
+            font-size: 13px;
+        }
+
+        .file-info-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .file-clear-btn {
+            background: #1a1a1a;
+            color: #f97316;
+            border: 1px solid #404040;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.2s;
+        }
+
+        .file-clear-btn:hover {
+            background: #333333;
+            border-color: #f97316;
+        }
+
+        .file-clear-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.35);
+        }
+
+        .context-input {
+            margin-top: 15px;
+        }
+
+        .context-input label {
+            display: block;
+            color: #e5e5e5;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .context-input input,
+        .context-input textarea {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            color: #e5e5e5;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .context-input input:focus,
+        .context-input textarea:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #a3a3a3;
+            font-size: 14px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 8px;
+            accent-color: #f97316;
+            width: 16px;
+            height: 16px;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #404040;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            color: #a3a3a3;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            background: #2a2a2a;
+            color: #e5e5e5;
+        }
+
+        .tab-btn.active {
+            background: #f97316;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .extraction-preview {
+            background: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .extraction-preview.active {
+            display: block;
+        }
+
+        .extraction-preview h4 {
+            color: #f97316;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .extraction-preview pre {
+            color: #a3a3a3;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .pii-analysis {
+            background: #2a2a2a;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .pii-analysis h4 {
+            color: #f97316;
+            margin-bottom: 10px;
+        }
+
+        .pii-item {
+            background: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+
+        .pii-item-type {
+            color: #f97316;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .pii-item-value {
+            color: #e5e5e5;
+            font-family: 'Courier New', monospace;
+            margin-top: 4px;
+        }
+
+        .pii-item-reason {
+            color: #737373;
+            font-size: 12px;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* Selectable PII Entity Cards */
+        .pii-cards-section {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .pii-cards-section.active {
+            display: block;
+        }
+
+        .pii-cards-section h4 {
+            color: #f97316;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .pii-cards-hint {
+            color: #737373;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .pii-cards-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .pii-entity-card {
+            background: #1a1a1a;
+            border: 2px solid #404040;
+            border-radius: 10px;
+            padding: 14px 18px;
+            min-width: 220px;
+            max-width: 360px;
+            flex: 1 1 260px;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+        }
+
+        .pii-entity-card:hover {
+            border-color: #f97316;
+            background: #222;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(249, 115, 22, 0.15);
+        }
+
+        .pii-entity-card.selected {
+            border-color: #f97316;
+            background: #2a2016;
+            box-shadow: 0 0 0 1px #f97316, 0 4px 16px rgba(249, 115, 22, 0.18);
+        }
+
+        .pii-entity-card.selected::after {
+            content: '\2713';
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            color: #f97316;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .pii-card-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 6px;
+            align-items: baseline;
+            line-height: 1.4;
+        }
+
+        .pii-card-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .pii-card-label {
+            color: #a3a3a3;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+            min-width: 70px;
+        }
+
+        .pii-card-value {
+            color: #e5e5e5;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .pii-cards-copied-msg {
+            color: #22c55e;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .pii-cards-copied-msg.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PII-Anonymizer Web-CLI</h1>
+            <p>Detect, Anonymize, and Protect Personally Identifiable Information</p>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                <h4>How to Use:</h4>
+                <p>
+                    1. Enter text directly OR upload a file (image, PDF, TXT)<br>
+                    2. For files: Add a context prompt to specify which PII to extract<br>
+                    3. Select an anonymization mode<br>
+                    4. Click "Anonymize & Process with LLM" to protect PII and get AI response
+                </p>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-container">
+                <button class="tab-btn active" onclick="switchTab('text')">📝 Text Input</button>
+                <button class="tab-btn" onclick="switchTab('file')">📁 File Upload (OCR)</button>
+            </div>
+
+            <!-- Text Input Tab -->
+            <div id="textTab" class="tab-content active">
+                <div class="sample-text" onclick="loadSampleText()">
+                    <p>Click here to load sample text:</p>
+                    <code>Hello, my name is John Smith. I live in New York and my email is john.smith@email.com. You can call me at (555) 123-4567. My credit card is 4111-1111-1111-1111.</code>
+                </div>
+
+                <div class="section">
+                    <label class="section-title" for="inputText">Input Text:</label>
+                    <textarea id="inputText" placeholder="Enter text containing PII..."></textarea>
+                </div>
+            </div>
+
+            <!-- File Upload Tab -->
+            <div id="fileTab" class="tab-content">
+                <div class="file-upload-section" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <input type="file" id="fileInput"
+                        accept=".png,.jpg,.jpeg,.bmp,.tiff,.tif,.gif,.webp,.pdf,.txt,.text,.md,.csv"
+                        onchange="handleFileSelect(event)">
+                    <div class="file-upload-icon">📄</div>
+                    <div class="file-upload-text">
+                        <strong>Click to upload</strong> or drag and drop<br>
+                        Supports: Images (PNG, JPG, TIFF), PDF, TXT
+                    </div>
+                </div>
+
+                <div class="file-info" id="fileInfo">
+                    <div class="file-info-header">
+                        <div class="file-info-name" id="fileName"></div>
+                        <button class="file-clear-btn" type="button" title="Remove file"
+                            onclick="clearSelectedFile()">X</button>
+                    </div>
+                    <div class="file-info-meta" id="fileMeta"></div>
+                </div>
+
+                <div class="context-input">
+                    <label for="contextPrompt">Context Prompt (What PII should be extracted?):</label>
+                    <textarea id="contextPrompt" rows="3"
+                        placeholder="e.g., 'Extract customer contact information for a support ticket' or 'Identify financial details for audit purposes'"></textarea>
+                </div>
+
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="skipFiltering">
+                        Skip context filtering (extract all PII)
+                    </label>
+                    <label>
+                        <input type="checkbox" id="previewExtraction">
+                        Preview extracted text before anonymizing
+                    </label>
+                </div>
+
+                <div class="extraction-preview" id="extractionPreview">
+                    <h4>Extracted Text Preview:</h4>
+                    <pre id="extractedText"></pre>
+                </div>
+
+                <div class="pii-analysis" id="piiAnalysis" style="display: none;">
+                    <h4>Context-Relevant PII Identified:</h4>
+                    <div id="piiItems"></div>
+                </div>
+
+                <!-- Selectable PII Entity Cards -->
+                <div class="pii-cards-section" id="piiCardsSection">
+                    <h4>Select a PII group to use:</h4>
+                    <p class="pii-cards-hint">Click on a card below to copy it into the input text box for LLM
+                        processing.</p>
+                    <div class="pii-cards-grid" id="piiCardsGrid"></div>
+                    <p class="pii-cards-copied-msg" id="piiCardsCopiedMsg">✓ Copied to input box. Switch to Text Input
+                        tab to review or click "Anonymize & Process with LLM".</p>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <button class="btn-secondary" onclick="extractTextOnly()" style="margin-right: 10px;">
+                        Extract Text Only
+                    </button>
+                    <button class="btn-secondary" onclick="useExtractedText()">
+                        Use Extracted Text ↓
+                    </button>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="radio-group">
+                    <strong>Anonymization Mode:</strong>
+                    <label>
+                        <input type="radio" name="mode" value="pseudonymize" checked>
+                        Pseudonymize (PII_1, PII_2...)
+                    </label>
+                    <label>
+                        <input type="radio" name="mode" value="mask">
+                        Mask (J*** S***...)
+                    </label>
+                    <label>
+                        <input type="radio" name="mode" value="replace">
+                        Replace ([PERSON], [EMAIL]...)
+                    </label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="anonymizeText()">
+                    Anonymize & Process with LLM
+                </button>
+                <button class="btn-secondary" onclick="clearResults()">
+                    Clear Results
+                </button>
+                <button class="btn-danger" onclick="clearMappings()">
+                    Clear Stored Mappings
+                </button>
+            </div>
+
+            <!-- Security: Mapping TTL Control -->
+            <div class="ttl-control-panel"
+                style="margin-top: 12px; padding: 12px 16px; background: rgba(255,152,0,0.08); border: 1px solid rgba(255,152,0,0.25); border-radius: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span style="font-size: 0.85rem; color: #ffb74d; font-weight: 600;">🔒 Mapping Expiry:</span>
+                    <select id="ttlSelect" onchange="updateTTL()"
+                        style="background: #1e1e1e; color: #e0e0e0; border: 1px solid #555; border-radius: 4px; padding: 4px 8px; font-size: 0.82rem;">
+                        <option value="300">5 minutes</option>
+                        <option value="900">15 minutes</option>
+                        <option value="1800" selected>30 minutes</option>
+                        <option value="3600">1 hour</option>
+                        <option value="7200">2 hours</option>
+                        <option value="14400">4 hours</option>
+                        <option value="86400">24 hours</option>
+                    </select>
+                    <span id="ttlStatus" style="font-size: 0.78rem; color: #999;">Active mappings: 0</span>
+                </div>
+                <p style="margin: 6px 0 0; font-size: 0.72rem; color: #888;">
+                    PII mappings are encrypted and auto-expire after the selected duration. Clear immediately with the
+                    button above.
+                </p>
+            </div>
+
+            <div class="error" id="errorMessage"></div>
+            <div class="success" id="successMessage"></div>
+
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>Processing your request...</p>
+            </div>
+
+            <div class="results" id="results" style="display: none;">
+                <div class="section-title">Results:</div>
+
+                <div class="stats" id="stats"></div>
+
+                <div class="result-box">
+                    <h3>Anonymized Text:</h3>
+                    <div class="result-content" id="anonymizedText"></div>
+                </div>
+
+                <div class="result-box" id="llmResponseBox" style="display: none;">
+                    <h3>LLM Response (Anonymized):</h3>
+                    <div class="result-content" id="llmResponse"></div>
+                </div>
+
+                <div class="result-box" id="deanonymizedBox" style="display: none;">
+                    <h3>Deanonymized Output:</h3>
+                    <div class="result-content" id="deanonymizedOutput"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BACKEND_URL can be provided by a separate `config.js` when hosting the frontend
+        // e.g. in GitHub Pages add a small `config.js` with: window.BACKEND_URL = 'https://your-backend.example.com'
+        const BACKEND_URL = window.BACKEND_URL || '';
+
+        // Global state for file upload
+        let selectedFile = null;
+        let extractedTextContent = '';
+        let currentTab = 'text';
+        let activeContextPrompt = '';  // Stores context prompt for LLM calls
+
+        function apiUrl(path) {
+            // path must start with '/'
+            if (!path.startsWith('/')) path = '/' + path;
+            if (!BACKEND_URL) return path;
+            return BACKEND_URL.replace(/\/$/, '') + path;
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tab === 'text') {
+                document.querySelector('.tab-btn:first-child').classList.add('active');
+                document.getElementById('textTab').classList.add('active');
+            } else {
+                document.querySelector('.tab-btn:last-child').classList.add('active');
+                document.getElementById('fileTab').classList.add('active');
+            }
+        }
+
+        // File handling
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                displayFileInfo(file);
+            }
+        }
+
+        function displayFileInfo(file) {
+            const fileInfo = document.getElementById('fileInfo');
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileMeta').textContent = `Size: ${formatFileSize(file.size)} | Type: ${file.type || 'Unknown'}`;
+            fileInfo.classList.add('active');
+        }
+
+        function clearSelectedFile() {
+            selectedFile = null;
+            const fileInput = document.getElementById('fileInput');
+            fileInput.value = '';
+            document.getElementById('fileName').textContent = '';
+            document.getElementById('fileMeta').textContent = '';
+            document.getElementById('fileInfo').classList.remove('active');
+            document.getElementById('extractionPreview').classList.remove('active');
+            document.getElementById('extractedText').textContent = '';
+            document.getElementById('piiAnalysis').style.display = 'none';
+            document.getElementById('piiItems').innerHTML = '';
+            hidePIICards();
+            extractedTextContent = '';
+            showSuccess('File removed');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Drag and drop handling
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                selectedFile = files[0];
+                displayFileInfo(files[0]);
+                document.getElementById('fileInput').files = files;
+            }
+        });
+
+        // Extract text from file (with optional context-aware PII extraction)
+        async function extractTextOnly() {
+            if (!selectedFile) {
+                showError('Please select a file first');
+                return;
+            }
+
+            const contextPrompt = document.getElementById('contextPrompt').value.trim();
+            const skipFiltering = document.getElementById('skipFiltering').checked;
+
+            showLoading();
+            hideError();
+
+            try {
+                // Step 1: Always extract full text first
+                const extractForm = new FormData();
+                extractForm.append('file', selectedFile);
+
+                const extractResponse = await fetch(apiUrl('/api/ocr/extract'), {
+                    method: 'POST',
+                    body: extractForm
+                });
+
+                if (!extractResponse.ok) {
+                    const error = await extractResponse.json();
+                    throw new Error(error.error || 'Extraction failed');
+                }
+
+                const extractData = await extractResponse.json();
+
+                if (!extractData.success) {
+                    throw new Error(extractData.error || 'Failed to extract text');
+                }
+
+                // Store full extracted text as initial default
+                extractedTextContent = extractData.text;
+                // Store context prompt for LLM calls
+                activeContextPrompt = contextPrompt;
+                // Hide PII cards from any previous extraction
+                hidePIICards();
+
+                let msg = `Text extracted successfully!`;
+                if (extractData.ocr_applied) msg += ' (OCR was applied)';
+                if (extractData.pages_processed !== undefined) msg += ` Pages: ${extractData.pages_processed}`;
+
+                // Step 2: If context prompt is provided, run PII identification
+                if (contextPrompt && !skipFiltering) {
+                    msg += ' Running context-aware PII extraction...';
+                    showSuccess(msg);
+
+                    const processForm = new FormData();
+                    processForm.append('file', selectedFile);
+                    processForm.append('context_prompt', contextPrompt);
+                    processForm.append('skip_filtering', 'false');
+
+                    const processResponse = await fetch(apiUrl('/api/ocr/process'), {
+                        method: 'POST',
+                        body: processForm
+                    });
+
+                    if (processResponse.ok) {
+                        const processData = await processResponse.json();
+
+                        if (processData.success && processData.pii_analysis) {
+                            const analysis = processData.pii_analysis;
+                            const relevant = analysis.relevant_pii || [];
+
+                            // Show extracted PII in the preview instead of raw OCR text
+                            if (relevant.length > 0) {
+                                let piiText = 'Context-Relevant PII Extracted:\n';
+                                piiText += '─'.repeat(40) + '\n\n';
+                                relevant.forEach((pii, i) => {
+                                    piiText += `${i + 1}. [${pii.type}]\n`;
+                                    piiText += `   Value: ${pii.value}\n`;
+                                    if (pii.reason) piiText += `   Reason: ${pii.reason}\n`;
+                                    piiText += '\n';
+                                });
+
+                                const excluded = analysis.excluded_pii || [];
+                                if (excluded.length > 0) {
+                                    piiText += '─'.repeat(40) + '\n';
+                                    piiText += `Excluded PII (not relevant to your query): ${excluded.length} items\n`;
+                                    excluded.forEach(pii => {
+                                        piiText += `   • ${pii.type}: ${pii.value}`;
+                                        if (pii.reason_excluded) piiText += ` (${pii.reason_excluded})`;
+                                        piiText += '\n';
+                                    });
+                                }
+
+                                if (analysis.summary) {
+                                    piiText += '\n─'.repeat(40) + '\n';
+                                    piiText += `Summary: ${analysis.summary}\n`;
+                                }
+
+                                document.getElementById('extractedText').textContent = piiText;
+
+                                // Build selectable PII entity cards (clean values only)
+                                // Pass the original text for position-based grouping
+                                buildPIICards(relevant, extractData.text || '');
+                                // Don't auto-copy; let user pick a card
+                                extractedTextContent = '';
+                            } else {
+                                document.getElementById('extractedText').textContent = extractData.text;
+                                extractedTextContent = extractData.text;
+                            }
+
+                            // Also display PII analysis cards
+                            displayPIIAnalysis(analysis);
+
+                            msg = `PII extraction complete! Found ${relevant.length} relevant PII items.`;
+                        } else {
+                            // PII extraction failed, show full text
+                            document.getElementById('extractedText').textContent = extractData.text;
+                            extractedTextContent = extractData.text;
+                            msg += ' (PII analysis unavailable)';
+                        }
+                    } else {
+                        // Process endpoint failed, show full text
+                        document.getElementById('extractedText').textContent = extractData.text;
+                        extractedTextContent = extractData.text;
+                    }
+                } else {
+                    // No context prompt: show full extracted text as before
+                    document.getElementById('extractedText').textContent = extractData.text;
+                }
+
+                document.getElementById('extractionPreview').classList.add('active');
+                showSuccess(msg);
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Use extracted text in main input
+        function useExtractedText() {
+            if (extractedTextContent) {
+                document.getElementById('inputText').value = extractedTextContent;
+                // Preserve context prompt from file tab
+                const ctxPrompt = document.getElementById('contextPrompt').value.trim();
+                if (ctxPrompt) activeContextPrompt = ctxPrompt;
+                switchTab('text');
+                showSuccess('Extracted text loaded into input field' + (activeContextPrompt ? ' (context prompt will be included in LLM call)' : ''));
+            } else {
+                showError('No extracted text available. Use "Extract Text Only" first, or click a PII card above.');
+            }
+        }
+
+        // ===== PII Entity Card Logic =====
+
+        // Friendly labels for PII types
+        const PII_FRIENDLY_LABELS = {
+            // Identity
+            'PERSON_NAME': 'Name',
+            'PERSON': 'Name',
+            'NAME': 'Name',
+            'NATIONALITY_GROUP': 'Nationality',
+            'LANGUAGE_NAME': 'Language',
+            // Contact
+            'PHONE': 'Phone No.',
+            'MOBILE': 'Phone No.',
+            'PHONE_NUMBER': 'Phone No.',
+            'EMAIL': 'Email',
+            'EMAIL_ADDRESS': 'Email',
+            // Address & Location
+            'ADDRESS': 'Address',
+            'PHYSICAL_ADDRESS': 'Address',
+            'LOCATION': 'Location',
+            'LOCALITY': 'Locality',
+            'ZIP_CODE': 'ZIP Code',
+            'PIN_CODE': 'PIN Code',
+            'UK_POSTCODE': 'Postcode',
+            'CANADA_POSTCODE': 'Postal Code',
+            'AUSTRALIA_POSTCODE': 'Postcode',
+            'FRANCE_POSTCODE': 'Code Postal',
+            'NETHERLANDS_POSTCODE': 'Postcode',
+            'JAPAN_POSTCODE': 'Postal Code',
+            'GERMANY_PLZ': 'PLZ',
+            'BRAZIL_CEP': 'CEP',
+            // Financial
+            'CREDIT_CARD': 'Credit Card',
+            'BANK_ACCOUNT': 'Bank Account',
+            'ACCOUNT_ID': 'Account ID',
+            'ACCOUNT_NUMBER': 'Account No.',
+            'IBAN': 'IBAN',
+            'SWIFT_BIC': 'SWIFT/BIC',
+            'IFSC_CODE': 'IFSC Code',
+            'SORT_CODE': 'Sort Code',
+            'BSB_NUMBER': 'BSB Number',
+            'ROUTING_NUMBER': 'Routing No.',
+            'FINANCIAL_AMOUNT': 'Amount',
+            'FINANCIAL_INFO': 'Financial Info',
+            // Government IDs
+            'SSN': 'SSN',
+            'INDIA_PAN': 'PAN',
+            'INDIA_AADHAAR': 'Aadhaar',
+            'UK_NIN': 'NI Number',
+            'UK_VAT': 'VAT Number',
+            'EU_VAT': 'EU VAT',
+            'CANADA_SIN': 'SIN',
+            'AUSTRALIA_TFN': 'TFN',
+            'AUSTRALIA_ABN': 'ABN',
+            'GERMANY_STEUER_ID': 'Steuer-ID',
+            'CANADA_GST': 'GST Number',
+            // Travel & Licenses
+            'PASSPORT': 'Passport',
+            'PASSPORT_CONTEXT': 'Passport',
+            'PASSPORT_US': 'US Passport',
+            'PASSPORT_UK': 'UK Passport',
+            'PASSPORT_INDIA': 'India Passport',
+            'DRIVER_LICENSE': 'Driver License',
+            'DRIVER_LICENSE_CONTEXT': 'Driver License',
+            'DRIVING_LICENSE': 'Driving License',
+            'INDIA_DL': 'Driving License',
+            // Medical
+            'UK_NHS': 'NHS Number',
+            'US_MEDICARE': 'Medicare ID',
+            'MEDICAL_ID': 'Medical ID',
+            // Network & Digital
+            'IP_ADDRESS': 'IP Address',
+            'IPV6_ADDRESS': 'IPv6 Address',
+            'MAC_ADDRESS': 'MAC Address',
+            'URL': 'URL',
+            // Vehicle
+            'UK_VEHICLE_REG': 'Vehicle Reg.',
+            'INDIA_VEHICLE_REG': 'Vehicle Reg.',
+            'VEHICLE_REG': 'Vehicle Reg.',
+            // Organizational & Misc
+            'ORGANIZATION': 'Organization',
+            'EMPLOYEE_ID': 'Employee ID',
+            'APPLICATION_NUMBER': 'Application No.',
+            'FACILITY_NAME': 'Facility',
+            'EVENT_NAME': 'Event',
+            'LEGAL_DOCUMENT': 'Legal Document',
+            'ARTWORK_TITLE': 'Artwork',
+            // Temporal
+            'DATE_TIME': 'Date/Time',
+            'DATE': 'Date',
+            'DOB': 'Date of Birth',
+        };
+
+        function friendlyLabel(piiType) {
+            return PII_FRIENDLY_LABELS[piiType] || piiType.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        /**
+         * Group a flat list of relevant PIIs into entity groups.
+         * Uses paragraph-based proximity + text position for robust grouping.
+         * If no person-type anchors exist, all PIIs go into one group.
+         *
+         * @param {Array} relevantPII - flat list of PII items
+         * @param {string} sourceText - the original extracted text (for position lookup)
+         */
+        function groupPIIs(relevantPII, sourceText) {
+            const personTypes = new Set(['PERSON_NAME', 'PERSON', 'NAME']);
+
+            // --- Step 1: Ensure every item has a valid position ---
+            // If backend didn't set position, find it in the source text
+            const enriched = relevantPII.map(pii => {
+                const item = { ...pii };  // shallow clone
+                let pos = item.position;
+                if ((pos === undefined || pos === null || pos >= 9999999) && sourceText) {
+                    // Search for value in the text
+                    let idx = sourceText.indexOf(item.value);
+                    if (idx === -1) {
+                        idx = sourceText.toLowerCase().indexOf(item.value.toLowerCase());
+                    }
+                    // Try partial match (first 2-3 words) for entities that were truncated/expanded
+                    if (idx === -1 && item.value.length > 8) {
+                        const words = item.value.split(/\s+/);
+                        if (words.length >= 2) {
+                            const partial = words.slice(0, Math.min(3, words.length)).join(' ');
+                            idx = sourceText.toLowerCase().indexOf(partial.toLowerCase());
+                        }
+                    }
+                    item.position = (idx !== -1) ? idx : 9999999;
+                }
+                return item;
+            });
+
+            // --- Step 2: Sort by text position ---
+            const sorted = enriched.sort((a, b) => {
+                const posA = (a.position !== undefined && a.position !== null) ? a.position : 9999999;
+                const posB = (b.position !== undefined && b.position !== null) ? b.position : 9999999;
+                return posA - posB;
+            });
+
+            // --- Step 3: Build paragraph boundaries from source text ---
+            // Paragraphs are separated by blank lines (double newline)
+            let paraBoundaries = [];
+            if (sourceText) {
+                const paraRegex = /\n\s*\n/g;
+                let match;
+                paraBoundaries.push(0);
+                while ((match = paraRegex.exec(sourceText)) !== null) {
+                    paraBoundaries.push(match.index + match[0].length);
+                }
+                paraBoundaries.push(sourceText.length);
+            }
+
+            function getParagraphIndex(pos) {
+                if (!paraBoundaries.length) return 0;
+                for (let i = paraBoundaries.length - 1; i >= 0; i--) {
+                    if (pos >= paraBoundaries[i]) return i;
+                }
+                return 0;
+            }
+
+            // --- Step 4: Filter false PERSON_NAME anchors ---
+            const nonNameWords = new Set([
+                'national', 'digital', 'finance', 'center', 'centre', 'bank', 'corporate',
+                'agreement', 'legal', 'document', 'passport', 'license', 'licence', 'number', 'address',
+                'insurance', 'medical', 'general', 'federal', 'international', 'university',
+                'department', 'institute', 'hospital', 'global', 'services', 'limited',
+                'technologies', 'solutions', 'analytics', 'systems', 'network', 'portal',
+                'verification', 'compliance', 'application', 'registration', 'employment',
+                'payroll', 'taxation', 'banking', 'account', 'credit', 'code', 'sort',
+                'driver', 'driving', 'swift', 'routing', 'certificate', 'national',
+                'hill', 'park', 'gardens', 'street', 'road', 'lane', 'avenue',
+                'tower', 'bridge', 'square', 'gate', 'place', 'court', 'way'
+            ]);
+            const falsePrefixes = ['the ', 'his ', 'her ', 'its ', 'my ', 'our ', 'your ', 'their ', 'a ', 'an ', 'this ', 'that '];
+            function isLikelyPersonName(pii) {
+                if (!personTypes.has(pii.type)) return false;
+                const val = pii.value.trim();
+                if (val.length < 2) return false;
+                const valLower = val.toLowerCase();
+                if (falsePrefixes.some(p => valLower.startsWith(p))) return false;
+                const words = val.split(/\s+/);
+                if (words.some(w => nonNameWords.has(w.toLowerCase()))) return false;
+                // Reject all-uppercase strings (likely codes/abbreviations, e.g., "NWBKGB2L")
+                if (/^[A-Z0-9]+$/.test(val) && val.length >= 4) return false;
+                // Reject single words that don't look like capitalized names
+                if (words.length === 1) {
+                    if (!/^[A-Z][a-z]+$/.test(val)) return false;
+                }
+                // Reject values with digits
+                if (/\d/.test(val)) return false;
+                return true;
+            }
+
+            // --- Step 5: Find person anchors and assign paragraph ownership ---
+            const personAnchors = sorted.filter(p => isLikelyPersonName(p));
+
+            // If no person anchors, put everything in one group
+            if (personAnchors.length === 0) {
+                return relevantPII.length > 0 ? [[...relevantPII]] : [];
+            }
+
+            // Build paragraph → person mapping
+            const paraToPersonIdx = {};
+            personAnchors.forEach((person, idx) => {
+                const paraIdx = getParagraphIndex(person.position || 0);
+                // First person in a paragraph owns it
+                if (!(paraIdx in paraToPersonIdx)) {
+                    paraToPersonIdx[paraIdx] = idx;
+                }
+            });
+
+            // --- Step 6: Group items by nearest preceding person anchor ---
+            // Use a hybrid: paragraph-based when paragraphs are available,
+            // fallback to nearest-preceding-anchor when not
+            const groups = personAnchors.map(p => [p]);  // Each person starts their own group
+
+            sorted.forEach(pii => {
+                if (isLikelyPersonName(pii)) return;  // Already added as anchor
+
+                const pos = pii.position || 9999999;
+
+                // Strategy A: Paragraph-based assignment
+                if (paraBoundaries.length > 2) {
+                    const paraIdx = getParagraphIndex(pos);
+                    if (paraIdx in paraToPersonIdx) {
+                        groups[paraToPersonIdx[paraIdx]].push(pii);
+                        return;
+                    }
+                    // Find the closest preceding paragraph that has a person
+                    let bestPersonIdx = -1;
+                    for (let p = paraIdx; p >= 0; p--) {
+                        if (p in paraToPersonIdx) {
+                            bestPersonIdx = paraToPersonIdx[p];
+                            break;
+                        }
+                    }
+                    if (bestPersonIdx !== -1) {
+                        groups[bestPersonIdx].push(pii);
+                        return;
+                    }
+                }
+
+                // Strategy B: Nearest preceding person by position
+                let assignedIdx = 0;
+                for (let i = personAnchors.length - 1; i >= 0; i--) {
+                    if ((personAnchors[i].position || 0) <= pos) {
+                        assignedIdx = i;
+                        break;
+                    }
+                }
+                groups[assignedIdx].push(pii);
+            });
+
+            // Filter out empty groups (shouldn't happen, but safety)
+            return groups.filter(g => g.length > 0);
+        }
+
+        /**
+         * Convert a PII group into a clean text string for the input textbox.
+         * Example output:
+         *   Name: Rohan Mehta
+         *   Phone No.: +91-91234-77890
+         */
+        function cardTextFromGroup(group) {
+            return group.map(pii => `${friendlyLabel(pii.type)}: ${pii.value}`).join('\n');
+        }
+
+        /**
+         * Build selectable PII entity cards from relevant PIIs.
+         * Each card represents one grouped entity (person + associated PIIs).
+         * An "All PIIs" card is added when there are multiple groups.
+         * @param {Array} relevantPII - flat list of PII items
+         * @param {string} sourceText - original extracted text for position enrichment
+         */
+        function buildPIICards(relevantPII, sourceText) {
+            const section = document.getElementById('piiCardsSection');
+            const grid = document.getElementById('piiCardsGrid');
+            grid.innerHTML = '';
+            document.getElementById('piiCardsCopiedMsg').classList.remove('active');
+
+            const groups = groupPIIs(relevantPII, sourceText || '');
+
+            // Add "Select All" card if more than one group
+            if (groups.length > 1) {
+                const allCard = document.createElement('div');
+                allCard.className = 'pii-entity-card pii-card-all';
+                allCard.dataset.index = 'all';
+
+                const header = document.createElement('div');
+                header.className = 'pii-card-row';
+                header.innerHTML = `<span class="pii-card-label" style="font-weight:700;color:#4fc3f7;">Select All (${relevantPII.length} items across ${groups.length} persons)</span>`;
+                allCard.appendChild(header);
+
+                // Show a summary of what's included
+                groups.forEach((group, i) => {
+                    const personPii = group.find(p => ['PERSON_NAME', 'PERSON', 'NAME'].includes(p.type));
+                    const personName = personPii ? personPii.value : `Group ${i + 1}`;
+                    const summary = document.createElement('div');
+                    summary.className = 'pii-card-row';
+                    summary.innerHTML = `<span class="pii-card-label" style="opacity:0.7;">•</span>
+                                         <span class="pii-card-value" style="opacity:0.7;">${escapeHtmlSafe(personName)} — ${group.length} items</span>`;
+                    allCard.appendChild(summary);
+                });
+
+                allCard.addEventListener('click', () => selectAllPIICards(allCard, groups));
+                grid.appendChild(allCard);
+            }
+
+            groups.forEach((group, idx) => {
+                const card = document.createElement('div');
+                card.className = 'pii-entity-card';
+                card.dataset.index = idx;
+
+                // Build rows
+                group.forEach(pii => {
+                    const row = document.createElement('div');
+                    row.className = 'pii-card-row';
+                    row.innerHTML = `<span class="pii-card-label">${escapeHtmlSafe(friendlyLabel(pii.type))}:</span>
+                                     <span class="pii-card-value">${escapeHtmlSafe(pii.value)}</span>`;
+                    card.appendChild(row);
+                });
+
+                // Click handler
+                card.addEventListener('click', () => selectPIICard(card, group));
+                grid.appendChild(card);
+            });
+
+            section.classList.add('active');
+        }
+
+        function hidePIICards() {
+            const section = document.getElementById('piiCardsSection');
+            section.classList.remove('active');
+            document.getElementById('piiCardsGrid').innerHTML = '';
+            document.getElementById('piiCardsCopiedMsg').classList.remove('active');
+        }
+
+        /**
+         * When user clicks a PII card, copy its clean text to the input box.
+         */
+        function selectPIICard(cardEl, group) {
+            // Toggle selection visual
+            document.querySelectorAll('.pii-entity-card').forEach(c => c.classList.remove('selected'));
+            cardEl.classList.add('selected');
+
+            // Build clean text
+            const cleanText = cardTextFromGroup(group);
+            extractedTextContent = cleanText;
+
+            // Copy to input textbox
+            document.getElementById('inputText').value = cleanText;
+            // Preserve context prompt
+            const ctxPrompt = document.getElementById('contextPrompt').value.trim();
+            if (ctxPrompt) activeContextPrompt = ctxPrompt;
+
+            // Show confirmation
+            document.getElementById('piiCardsCopiedMsg').classList.add('active');
+            showSuccess('PII copied to input box. Click "Anonymize & Process with LLM" to proceed.');
+        }
+
+        /**
+         * Select all PII groups — combines all groups into one text block.
+         */
+        function selectAllPIICards(allCardEl, groups) {
+            // Highlight all cards
+            document.querySelectorAll('.pii-entity-card').forEach(c => c.classList.add('selected'));
+
+            // Build combined text with separators between groups
+            const parts = groups.map(group => cardTextFromGroup(group));
+            const cleanText = parts.join('\n\n');
+            extractedTextContent = cleanText;
+
+            // Copy to input textbox
+            document.getElementById('inputText').value = cleanText;
+            const ctxPrompt = document.getElementById('contextPrompt').value.trim();
+            if (ctxPrompt) activeContextPrompt = ctxPrompt;
+
+            document.getElementById('piiCardsCopiedMsg').classList.add('active');
+            showSuccess(`All ${groups.length} PII groups copied to input box.`);
+        }
+
+        function escapeHtmlSafe(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Process file with context-aware PII extraction
+        async function processFileWithContext() {
+            if (!selectedFile) {
+                showError('Please select a file first');
+                return;
+            }
+
+            const contextPrompt = document.getElementById('contextPrompt').value.trim();
+            const skipFiltering = document.getElementById('skipFiltering').checked;
+
+            if (!contextPrompt && !skipFiltering) {
+                showError('Please provide a context prompt or check "Skip context filtering"');
+                return;
+            }
+
+            showLoading();
+            hideError();
+
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                formData.append('context_prompt', contextPrompt);
+                formData.append('skip_filtering', skipFiltering.toString());
+
+                const response = await fetch(apiUrl('/api/ocr/process'), {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Processing failed');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    extractedTextContent = data.text_for_pseudonymization;
+                    activeContextPrompt = contextPrompt;  // Store context prompt for LLM calls
+                    document.getElementById('extractedText').textContent = extractedTextContent;
+                    document.getElementById('extractionPreview').classList.add('active');
+
+                    // Display PII analysis if available
+                    if (data.pii_analysis && data.pii_analysis.relevant_pii) {
+                        displayPIIAnalysis(data.pii_analysis);
+                    }
+
+                    showSuccess('File processed successfully with context-aware PII extraction');
+                } else {
+                    throw new Error(data.error || 'Processing failed');
+                }
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Display PII analysis results
+        function displayPIIAnalysis(analysis) {
+            const container = document.getElementById('piiAnalysis');
+            const itemsDiv = document.getElementById('piiItems');
+            itemsDiv.innerHTML = '';
+
+            if (analysis.relevant_pii && analysis.relevant_pii.length > 0) {
+                analysis.relevant_pii.forEach(pii => {
+                    const item = document.createElement('div');
+                    item.className = 'pii-item';
+                    item.innerHTML = `
+                        <div class="pii-item-type">${pii.type}</div>
+                        <div class="pii-item-value">${pii.value}</div>
+                        ${pii.reason ? `<div class="pii-item-reason">${pii.reason}</div>` : ''}
+                    `;
+                    itemsDiv.appendChild(item);
+                });
+                container.style.display = 'block';
+            }
+
+            if (analysis.summary) {
+                const summary = document.createElement('div');
+                summary.style.cssText = 'color: #a3a3a3; font-size: 13px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #404040;';
+                summary.textContent = analysis.summary;
+                itemsDiv.appendChild(summary);
+            }
+        }
+
+        function loadSampleText() {
+            document.getElementById('inputText').value =
+                "I need help with my credit card account. My name is Sarah Mitchell and my email is sarah.mitchell@techcorp.com. " +
+                "My phone number is +1 (555) 789-0123. I've been trying to update my billing address to 456 Oak Street, Portland, OR 97204 " +
+                "but keep getting an error when I use my credit card 4532-1234-5678-9012. " +
+                "Can you help me resolve this issue? My account ID is ACC-2024-56789.";
+            showSuccess("Sample text loaded! You can now anonymize it.");
+        }
+
+        function getSelectedMode() {
+            const selected = document.querySelector('input[name="mode"]:checked');
+            return selected ? selected.value : 'pseudonymize';
+        }
+
+        function showLoading() {
+            document.getElementById('loadingIndicator').classList.add('active');
+            document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingIndicator').classList.remove('active');
+            document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = 'Error: ' + message;
+            errorDiv.classList.add('active');
+            setTimeout(() => errorDiv.classList.remove('active'), 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.add('active');
+            setTimeout(() => successDiv.classList.remove('active'), 3000);
+        }
+
+        async function anonymizeText() {
+            const mode = getSelectedMode();
+
+            // If on file tab and file is selected, use OCR anonymization
+            if (currentTab === 'file' && selectedFile) {
+                await anonymizeFromFile(mode);
+                return;
+            }
+
+            const text = document.getElementById('inputText').value.trim();
+
+            if (!text) {
+                showError('Please enter some text to anonymize');
+                return;
+            }
+
+            showLoading();
+            hideError();
+
+            try {
+                const payload = {
+                    text: text,
+                    mode: mode,
+                    call_llm: true
+                };
+                // Include context prompt if available (from file extraction or manual)
+                if (activeContextPrompt) {
+                    payload.context_prompt = activeContextPrompt;
+                }
+                const response = await fetch(apiUrl('/api/anonymize'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Request failed');
+                }
+
+                const data = await response.json();
+                displayResults(data, mode);
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Anonymize directly from file with OCR
+        async function anonymizeFromFile(mode) {
+            if (!selectedFile) {
+                showError('Please select a file first');
+                return;
+            }
+
+            showLoading();
+            hideError();
+
+            try {
+                const contextPrompt = document.getElementById('contextPrompt').value.trim();
+                const skipFiltering = document.getElementById('skipFiltering').checked;
+
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                formData.append('mode', mode);
+                formData.append('call_llm', 'true');
+                formData.append('skip_filtering', skipFiltering.toString());
+                if (contextPrompt) {
+                    formData.append('context_prompt', contextPrompt);
+                }
+
+                const response = await fetch(apiUrl('/api/ocr/anonymize'), {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'OCR anonymization failed');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show extraction info
+                    if (data.extraction_metadata) {
+                        const meta = data.extraction_metadata;
+                        let infoMsg = `Source: ${meta.source_type || 'unknown'}`;
+                        if (meta.ocr_applied) infoMsg += ' (OCR applied)';
+                        if (meta.pages_processed) infoMsg += `, Pages: ${meta.pages_processed}`;
+                        console.log('Extraction info:', infoMsg);
+                    }
+
+                    // Show PII analysis
+                    if (data.pii_analysis) {
+                        displayPIIAnalysis(data.pii_analysis);
+                    }
+
+                    displayResults(data, mode, true);
+                } else {
+                    throw new Error(data.error || 'Processing failed');
+                }
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Display results (works for both text and file sources)
+        function displayResults(data, mode, fromFile = false) {
+            // Display anonymized text
+            document.getElementById('anonymizedText').textContent = data.anonymized_text;
+
+            // Update stats
+            let statsHTML = `
+                <div class="stat-item">
+                    <div class="stat-label">PII Detected</div>
+                    <div class="stat-value">${data.mappings_count}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Mode</div>
+                    <div class="stat-value">${mode}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">LLM Used</div>
+                    <div class="stat-value">Groq</div>
+                </div>
+            `;
+
+            if (fromFile && data.extraction_metadata) {
+                statsHTML += `
+                    <div class="stat-item">
+                        <div class="stat-label">Source</div>
+                        <div class="stat-value">${data.extraction_metadata.source_type || 'file'}</div>
+                    </div>
+                `;
+                if (data.extraction_metadata.ocr_applied) {
+                    statsHTML += `
+                        <div class="stat-item">
+                            <div class="stat-label">OCR</div>
+                            <div class="stat-value">Applied</div>
+                        </div>
+                    `;
+                }
+            }
+
+            document.getElementById('stats').innerHTML = statsHTML;
+
+            if (data.llm_response_anonymized) {
+                document.getElementById('llmResponse').textContent = data.llm_response_anonymized;
+                document.getElementById('llmResponseBox').style.display = 'block';
+
+                document.getElementById('deanonymizedOutput').textContent = data.deanonymized_output;
+                document.getElementById('deanonymizedBox').style.display = 'block';
+            } else {
+                document.getElementById('llmResponseBox').style.display = 'none';
+                document.getElementById('deanonymizedBox').style.display = 'none';
+            }
+
+            document.getElementById('results').style.display = 'block';
+
+            showSuccess(`Successfully processed! ${data.mappings_count} PII entities detected and protected.`);
+        }
+
+        function clearResults() {
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('anonymizedText').textContent = '';
+            document.getElementById('llmResponse').textContent = '';
+            document.getElementById('deanonymizedOutput').textContent = '';
+            document.getElementById('extractionPreview').classList.remove('active');
+            document.getElementById('piiAnalysis').style.display = 'none';
+            document.getElementById('piiItems').innerHTML = '';
+            hidePIICards();
+            extractedTextContent = '';
+            activeContextPrompt = '';
+            showSuccess('Results cleared');
+        }
+
+        async function clearMappings() {
+            if (!confirm('Are you sure you want to clear all stored PII mappings? This cannot be undone.')) {
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch(apiUrl('/api/clear-mappings'), {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to clear mappings');
+                }
+
+                showSuccess('All stored mappings have been securely wiped');
+                refreshStorageInfo();
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function updateTTL() {
+            const sel = document.getElementById('ttlSelect');
+            const ttl = parseInt(sel.value, 10);
+            try {
+                const response = await fetch(apiUrl('/api/set-ttl'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ttl_seconds: ttl })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    showSuccess(`Mapping TTL updated to ${data.message || ttl + 's'}`);
+                } else {
+                    showError(data.error || 'Failed to update TTL');
+                }
+            } catch (e) {
+                showError('Failed to update TTL: ' + e.message);
+            }
+        }
+
+        async function refreshStorageInfo() {
+            try {
+                const response = await fetch(apiUrl('/api/storage-info'));
+                if (!response.ok) return;
+                const info = await response.json();
+                const el = document.getElementById('ttlStatus');
+                if (el) {
+                    el.textContent = `Active mappings: ${info.active_entries || 0}` +
+                        (info.expired_entries ? ` (${info.expired_entries} expired)` : '');
+                }
+                // Sync TTL dropdown
+                const sel = document.getElementById('ttlSelect');
+                if (sel && info.ttl_seconds) {
+                    const opts = Array.from(sel.options);
+                    const match = opts.find(o => parseInt(o.value) === info.ttl_seconds);
+                    if (match) sel.value = match.value;
+                }
+            } catch (e) { /* silent */ }
+        }
+
+        // Refresh storage info every 30 seconds
+        setInterval(refreshStorageInfo, 30000);
+
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('active');
+        }
+
+        // Check health and OCR capabilities on load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch(apiUrl('/api/health'));
+                const data = await response.json();
+                console.log('Health check:', data);
+
+                // Also check OCR capabilities
+                const ocrResponse = await fetch(apiUrl('/api/ocr/capabilities'));
+                const ocrData = await ocrResponse.json();
+                console.log('OCR capabilities:', ocrData);
+
+                // Show warning if image OCR is not available
+                const supportsImageOcr = Boolean(
+                    ocrData.capabilities && (ocrData.capabilities.easyocr || ocrData.capabilities.image_ocr)
+                );
+                if (!supportsImageOcr) {
+                    console.warn('Image OCR not available. Install EasyOCR (pip install easyocr) or enable an OCR engine.');
+                }
+
+                // Fetch initial storage info (TTL, active mappings)
+                refreshStorageInfo();
+            } catch (error) {
+                console.error('Health check failed:', error);
+            }
+        });
+    </script>
+</body>
+
+</html>

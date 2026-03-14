@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PII Anonymizer</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 PII Anonymizer</h1>
+            <p class="subtitle">Protect personal information in text</p>
+        </header>
+
+        <div class="status-bar" id="statusBar">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusText">Checking connection...</span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="anonymize">Anonymize</button>
+            <button class="tab-btn" data-tab="deanonymize">Deanonymize</button>
+            <button class="tab-btn" data-tab="history">History</button>
+        </div>
+
+        <!-- Anonymize Tab -->
+        <div class="tab-content active" id="anonymize-tab">
+            <div class="input-group">
+                <label for="inputText">Text to Anonymize:</label>
+                <textarea id="inputText"
+                    placeholder="Paste or type text containing PII (names, emails, phone numbers, etc.)..."></textarea>
+                <div class="char-count"><span id="charCount">0</span> characters</div>
+            </div>
+
+            <div class="mode-group">
+                <label>Anonymization Mode:</label>
+                <div class="mode-options">
+                    <label class="mode-option">
+                        <input type="radio" name="mode" value="pseudonymize" checked>
+                        <span class="mode-label">
+                            <strong>Pseudonymize</strong>
+                            <small>Reversible tokens (name_1, email_1)</small>
+                        </span>
+                    </label>
+                    <label class="mode-option">
+                        <input type="radio" name="mode" value="mask">
+                        <span class="mode-label">
+                            <strong>Mask</strong>
+                            <small>Partial hiding (J*** D***)</small>
+                        </span>
+                    </label>
+                    <label class="mode-option">
+                        <input type="radio" name="mode" value="replace">
+                        <span class="mode-label">
+                            <strong>Replace</strong>
+                            <small>Labels ([Person Name])</small>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="llm-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="callLlm">
+                    <span>Process with LLM after anonymization</span>
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button id="anonymizeBtn" class="primary-btn">
+                    <span class="btn-icon">🔐</span> Anonymize
+                </button>
+                <button id="pasteBtn" class="secondary-btn">
+                    <span class="btn-icon">📋</span> Paste
+                </button>
+            </div>
+
+            <div class="result-group" id="resultGroup" style="display: none;">
+                <div class="result-header">
+                    <label>Anonymized Result:</label>
+                    <button id="copyResultBtn" class="icon-btn" title="Copy to clipboard">📋</button>
+                </div>
+                <div class="result-box" id="resultBox"></div>
+
+                <div id="llmResultGroup" style="display: none;">
+                    <div class="result-header">
+                        <label>LLM Response:</label>
+                        <button id="copyLlmBtn" class="icon-btn" title="Copy to clipboard">📋</button>
+                    </div>
+                    <div class="result-box" id="llmResultBox"></div>
+
+                    <div class="result-header">
+                        <label>Deanonymized Output:</label>
+                        <button id="copyDeanonBtn" class="icon-btn" title="Copy to clipboard">📋</button>
+                    </div>
+                    <div class="result-box" id="deanonResultBox"></div>
+                </div>
+
+                <div class="mappings-info" id="mappingsInfo"></div>
+            </div>
+        </div>
+
+        <!-- Deanonymize Tab -->
+        <div class="tab-content" id="deanonymize-tab">
+            <div class="input-group">
+                <label for="deanonInput">Anonymized Text:</label>
+                <textarea id="deanonInput"
+                    placeholder="Paste anonymized text containing tokens like name_1, email_1..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button id="deanonymizeBtn" class="primary-btn">
+                    <span class="btn-icon">🔓</span> Deanonymize
+                </button>
+            </div>
+
+            <div class="result-group" id="deanonResultGroup" style="display: none;">
+                <div class="result-header">
+                    <label>Original Text:</label>
+                    <button id="copyDeanonResultBtn" class="icon-btn" title="Copy to clipboard">📋</button>
+                </div>
+                <div class="result-box" id="deanonResult"></div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div class="tab-content" id="history-tab">
+            <div class="history-header">
+                <span>Recent Anonymizations</span>
+                <button id="clearHistoryBtn" class="text-btn">Clear All</button>
+            </div>
+            <div id="historyList" class="history-list">
+                <p class="empty-state">No history yet</p>
+            </div>
+        </div>
+
+        <footer>
+            <a href="options.html" target="_blank" id="settingsLink">⚙️ Settings</a>
+            <span class="version">v1.0.0</span>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

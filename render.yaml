@@ -1,0 +1,30 @@
+# Render deployment configuration
+# https://render.com/docs/deploy-flask
+
+services:
+  - type: web
+    name: pii-anonymizer-api
+    runtime: python
+    region: oregon  # or your preferred region
+    plan: free  # free, starter, standard, pro
+    buildCommand: |
+      pip install -r requirements.txt
+      python -m spacy download en_core_web_sm
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.10"
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "False"
+      - key: ENCRYPTION_KEY
+        sync: false  # Set this manually in Render dashboard
+      - key: GROQ_API_KEY
+        sync: false  # Set this manually in Render dashboard
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: ALLOWED_ORIGINS
+        value: "chrome-extension://*,https://*.github.io"
+    healthCheckPath: /api/health
+    autoDeploy: true  # Auto-deploy on git push
