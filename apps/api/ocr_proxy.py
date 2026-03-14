@@ -22,7 +22,10 @@ import urllib.request
 
 from flask import Blueprint, request, Response, jsonify
 
-from .crypto_util import dke_encrypt, dke_decrypt
+try:
+    from .crypto_util import dke_encrypt, dke_decrypt
+except ImportError:  # Support running as a top-level module (e.g., Railway root=apps/api)
+    from crypto_util import dke_encrypt, dke_decrypt
 
 
 def create_ocr_proxy_blueprint(ocr_service_url: str, master_key: bytes) -> Blueprint:

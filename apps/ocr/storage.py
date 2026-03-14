@@ -8,7 +8,10 @@ import os
 import time
 import threading
 from typing import Dict, Optional
-from .crypto_util import encrypt_data, decrypt_data
+try:
+    from .crypto_util import encrypt_data, decrypt_data
+except ImportError:  # Support running as a top-level module (e.g., Railway root=apps/ocr)
+    from crypto_util import encrypt_data, decrypt_data
 
 # Default TTL: 30 minutes (1800 seconds)
 DEFAULT_MAPPING_TTL = 30 * 60

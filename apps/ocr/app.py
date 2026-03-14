@@ -8,11 +8,18 @@ import json
 from flask import Flask, Blueprint, request, jsonify
 from dotenv import load_dotenv
 from flask_cors import CORS
-from .ocr_extractor import OCRExtractor, ContextAwarePIIExtractor
-from .anonymizer import PIIAnonymizer
-from .llm_client import GroqClient
-from .storage import MappingStorage
-from .crypto_util import generate_key, dke_decrypt, dke_encrypt
+try:
+    from .ocr_extractor import OCRExtractor, ContextAwarePIIExtractor
+    from .anonymizer import PIIAnonymizer
+    from .llm_client import GroqClient
+    from .storage import MappingStorage
+    from .crypto_util import generate_key, dke_decrypt, dke_encrypt
+except ImportError:  # Support running as a top-level module (e.g., Railway root=apps/ocr)
+    from ocr_extractor import OCRExtractor, ContextAwarePIIExtractor
+    from anonymizer import PIIAnonymizer
+    from llm_client import GroqClient
+    from storage import MappingStorage
+    from crypto_util import generate_key, dke_decrypt, dke_encrypt
 
 load_dotenv()
 

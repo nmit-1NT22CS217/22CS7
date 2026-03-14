@@ -6,9 +6,14 @@ import os
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 from flask_cors import CORS
-from .anonymizer import PIIAnonymizer
-from .storage import MappingStorage
-from .llm_client import GroqClient
+try:
+    from .anonymizer import PIIAnonymizer
+    from .storage import MappingStorage
+    from .llm_client import GroqClient
+except ImportError:  # Support running as a top-level module (e.g., Railway root=apps/api)
+    from anonymizer import PIIAnonymizer
+    from storage import MappingStorage
+    from llm_client import GroqClient
 
 load_dotenv()
 
@@ -28,7 +33,10 @@ ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY', '').encode()
 if not ENCRYPTION_KEY or ENCRYPTION_KEY == b'your_encryption_key_here':
     print("WARNING: No valid ENCRYPTION_KEY found in environment variables!")
     # In production, generate a temporary key but warn about it
-    from .crypto_util import generate_key
+    try:
+        from .crypto_util import generate_key
+    except ImportError:
+        from crypto_util import generate_key
     ENCRYPTION_KEY = generate_key()
     print(f"Using temporary key for this session. For production, set ENCRYPTION_KEY environment variable!")
     print(f"Generated key: {ENCRYPTION_KEY.decode()}")
@@ -37,7 +45,10 @@ if not ENCRYPTION_KEY or ENCRYPTION_KEY == b'your_encryption_key_here':
 # to handle them locally via the built-in OCR blueprint.
 OCR_SERVICE_URL = os.getenv('OCR_SERVICE_URL', '').strip()
 if OCR_SERVICE_URL:
-    from .ocr_proxy import create_ocr_proxy_blueprint
+    try:
+        from .ocr_proxy import create_ocr_proxy_blueprint
+    except ImportError:
+        from ocr_proxy import create_ocr_proxy_blueprint
     print(f"Proxying OCR requests to {OCR_SERVICE_URL} using DKE encryption")
     app.register_blueprint(create_ocr_proxy_blueprint(OCR_SERVICE_URL, ENCRYPTION_KEY))
 else:
