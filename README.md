@@ -78,10 +78,10 @@ python app.py
 3. **OCR service decrypts and extracts text**:
    - OCR service decrypts the envelope using the shared `ENCRYPTION_KEY`.
    - PDF:
-     - First tries direct text extraction.
+     - First tries direct text extraction (PyMuPDF).
      - If empty (scanned PDF), runs OCR.
    - Images:
-     - OCR is performed (EasyOCR + OpenCV pipeline).
+     - OCR is performed via Tesseract (pytesseract + Pillow).
    - OCR service returns extracted text (optionally encrypted if proxy header is set).
 4. **API receives extracted text**:
    - If OCR response is encrypted, API decrypts it using DKE.
