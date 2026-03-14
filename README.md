@@ -67,42 +67,67 @@ python app.py
 
 ## End-to-End Flow (Customer Doc → Response)
 
-1. **Document enters API service**:
-   - Customer uploads a document (image/PDF/text) or sends raw text to the API.
-   - If it is a file, the API prepares the OCR request.
-2. **DKE envelope created by API**:
-   - The API generates a one-time data key.
-   - The file payload is encrypted with the data key (AES-256-GCM).
-   - The data key is encrypted with the master `ENCRYPTION_KEY`.
-   - The API sends `{ encrypted_payload, encrypted_data_key }` to the OCR service.
-3. **OCR service decrypts and extracts text**:
-   - OCR service decrypts the envelope using the shared `ENCRYPTION_KEY`.
-   - PDF:
-     - First tries direct text extraction (PyMuPDF).
-     - If empty (scanned PDF), runs OCR.
-   - Images:
-     - OCR is performed via Tesseract (pytesseract + Pillow).
-   - OCR service returns extracted text (optionally encrypted if proxy header is set).
-4. **API receives extracted text**:
-   - If OCR response is encrypted, API decrypts it using DKE.
-   - API now has plain extracted text for processing.
-5. **PII detection (API service)**:
-   - spaCy NER + regex + custom patterns detect all PII.
-   - Optional LLM-based context filtering selects relevant PII only.
-6. **Anonymization (API service)**:
-   - Pseudonymize / Mask / Replace mode is applied.
-   - Reversible mode generates a mapping: `token -> original PII`.
-7. **Encrypted mapping storage with TTL**:
-   - Each mapping entry is timestamped.
-   - Entire mapping store is encrypted with AES-256-GCM and saved to `mappings.enc`.
-   - A cleanup thread purges expired entries based on TTL.
-8. **LLM call (optional)**:
-   - API calls LLM using the anonymized text.
-   - If reversible mappings exist, response is deanonymized.
-9. **Final response to client**:
-   - Anonymized text.
-   - LLM response (if enabled).
-   - Deanonymized response (when reversible mappings exist).
+1. **Client submits input**:
+   - Web UI (file upload) or API client sends either:
+     - `multipart/form-data` with `file`, or
+     - JSON with `base64_data` + `filename`.
+   - Raw text can also be sent directly to `/api/anonymize`.
+2. **API service receives request**:
+   - Validates request payload and mode (`pseudonymize|mask|replace`).
+   - If file-based, routes to OCR (local or remote).
+3. **DKE envelope created by API (when proxying OCR)**:
+   - API generates a one-time **data key** (32 bytes).
+   - API encrypts the file payload with **AES-256-GCM** using the data key.
+   - API encrypts the data key with the shared **master `ENCRYPTION_KEY`**.
+   - API sends JSON:
+     - `encrypted_payload`
+     - `encrypted_data_key`
+   - API sets header: `X-Encrypted-Response: true`.
+4. **OCR service decrypts request**:
+   - OCR service uses the shared `ENCRYPTION_KEY` to decrypt the data key.
+   - OCR service uses the data key to decrypt the payload.
+5. **OCR extraction pipeline**:
+   - **PDF**:
+     - PyMuPDF attempts direct text extraction.
+     - If text is empty, each page is rendered to image and OCR is applied.
+   - **Images**:
+     - Pillow loads the image.
+     - Tesseract extracts text via `pytesseract`.
+   - OCR service returns:
+     - `text`
+     - `source_type`
+     - `ocr_applied`
+     - metadata (page count, image info).
+6. **OCR response encryption (optional)**:
+   - If `X-Encrypted-Response: true` was set:
+     - OCR service encrypts the JSON response using DKE.
+7. **API receives OCR output**:
+   - If encrypted, API decrypts the response with DKE.
+   - Extracted text is now plain for PII processing.
+8. **PII detection (API service)**:
+   - **spaCy NER** finds named entities.
+   - **Regex + custom rules** find structured PII (email, phone, IDs, cards, etc.).
+   - Results are merged and deduplicated.
+9. **Context-aware filtering (optional)**:
+   - If `context_prompt` is provided:
+     - API sends detected PII list to LLM for relevance filtering.
+     - Only relevant PII is kept for selective anonymization.
+10. **Anonymization (API service)**:
+   - `pseudonymize`: reversible tokens (`name_1`, `email_2`).
+   - `mask`: irreversible partial masking.
+   - `replace`: irreversible human-readable labels.
+11. **Encrypted mapping storage with TTL**:
+   - Reversible mappings are stored as `token -> original`.
+   - Each entry gets a timestamp.
+   - Entire mapping store is encrypted with AES-256-GCM.
+   - Saved to `mappings.enc` (volume path if configured).
+   - Background cleanup thread purges expired entries by TTL.
+12. **Optional LLM call**:
+   - API sends anonymized text to LLM.
+   - If reversible mappings exist, API deanonymizes LLM output.
+13. **Final response**:
+   - Always returns anonymized text.
+   - Optionally returns LLM response and deanonymized output.
 
 ## Encryption Standards and Techniques Used
 
