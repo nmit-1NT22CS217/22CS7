@@ -538,6 +538,16 @@ def health_check():
     })
 
 
+@app.route('/', methods=['GET'])
+def root():
+    """Default root route for platform health checks."""
+    return jsonify({
+        'status': 'ok',
+        'service': 'ocr',
+        'health': '/health'
+    })
+
+
 if __name__ == '__main__':
     # Development server configuration
     debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
