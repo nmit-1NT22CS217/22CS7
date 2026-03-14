@@ -8,8 +8,7 @@ import json
 from flask import Flask, Blueprint, request, jsonify
 from dotenv import load_dotenv
 from flask_cors import CORS
-from .hybrid_ocr_extractor import HybridOCRExtractor
-from .ocr_extractor import ContextAwarePIIExtractor
+from .ocr_extractor import OCRExtractor, ContextAwarePIIExtractor
 from .anonymizer import PIIAnonymizer
 from .llm_client import GroqClient
 from .storage import MappingStorage
@@ -86,7 +85,7 @@ MAPPING_TTL = int(os.getenv('MAPPING_TTL', '1800'))
 print("Initializing OCR Service...")
 
 # Initialize OCR Extractor
-ocr_extractor = HybridOCRExtractor(languages=['en'])
+ocr_extractor = OCRExtractor()
 print(f"OCR Extractor initialized: {ocr_extractor.get_capabilities()}")
 
 # Initialize Anonymizer for PII processing
@@ -122,9 +121,9 @@ def get_ocr_capabilities():
     return jsonify({
         'capabilities': ocr_extractor.get_capabilities(),
         'supported_formats': {
-            'images': list(HybridOCRExtractor.SUPPORTED_IMAGE_FORMATS),
-            'text': list(HybridOCRExtractor.SUPPORTED_TEXT_FORMATS),
-            'pdf': list(HybridOCRExtractor.SUPPORTED_PDF_FORMATS)
+            'images': list(OCRExtractor.SUPPORTED_IMAGE_FORMATS),
+            'text': list(OCRExtractor.SUPPORTED_TEXT_FORMATS),
+            'pdf': list(OCRExtractor.SUPPORTED_PDF_FORMATS)
         }
     })
 

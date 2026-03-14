@@ -67,19 +67,42 @@ python app.py
 
 ## End-to-End Flow (Customer Doc → Response)
 
-1. Customer uploads a document (image/PDF/text) or provides raw text via the Web UI or API.
-2. The API service routes OCR requests:
-   - Local OCR (single-service mode), or
-   - Proxy to the OCR service over an encrypted DKE envelope.
-3. OCR service extracts text (PDF text extraction first; image OCR via EasyOCR fallback).
-4. The API service runs PII detection on the extracted text.
-5. The chosen anonymization mode is applied.
-6. Encrypted reversible mappings are stored with TTL.
-7. Optional LLM call is made on anonymized text.
-8. The final response is returned:
-   - Anonymized text
-   - LLM response (if enabled)
-   - Deanonymized response (when reversible mappings exist)
+1. **Document enters API service**:
+   - Customer uploads a document (image/PDF/text) or sends raw text to the API.
+   - If it is a file, the API prepares the OCR request.
+2. **DKE envelope created by API**:
+   - The API generates a one-time data key.
+   - The file payload is encrypted with the data key (AES-256-GCM).
+   - The data key is encrypted with the master `ENCRYPTION_KEY`.
+   - The API sends `{ encrypted_payload, encrypted_data_key }` to the OCR service.
+3. **OCR service decrypts and extracts text**:
+   - OCR service decrypts the envelope using the shared `ENCRYPTION_KEY`.
+   - PDF:
+     - First tries direct text extraction.
+     - If empty (scanned PDF), runs OCR.
+   - Images:
+     - OCR is performed (EasyOCR + OpenCV pipeline).
+   - OCR service returns extracted text (optionally encrypted if proxy header is set).
+4. **API receives extracted text**:
+   - If OCR response is encrypted, API decrypts it using DKE.
+   - API now has plain extracted text for processing.
+5. **PII detection (API service)**:
+   - spaCy NER + regex + custom patterns detect all PII.
+   - Optional LLM-based context filtering selects relevant PII only.
+6. **Anonymization (API service)**:
+   - Pseudonymize / Mask / Replace mode is applied.
+   - Reversible mode generates a mapping: `token -> original PII`.
+7. **Encrypted mapping storage with TTL**:
+   - Each mapping entry is timestamped.
+   - Entire mapping store is encrypted with AES-256-GCM and saved to `mappings.enc`.
+   - A cleanup thread purges expired entries based on TTL.
+8. **LLM call (optional)**:
+   - API calls LLM using the anonymized text.
+   - If reversible mappings exist, response is deanonymized.
+9. **Final response to client**:
+   - Anonymized text.
+   - LLM response (if enabled).
+   - Deanonymized response (when reversible mappings exist).
 
 ## Encryption Standards and Techniques Used
 

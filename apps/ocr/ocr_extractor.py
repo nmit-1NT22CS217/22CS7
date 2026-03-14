@@ -210,7 +210,7 @@ class OCRExtractor:
                 if text:
                     all_text.append(f"--- Page {page_num + 1} ---\n{text}")
                     pages_with_text += 1
-                elif ocr_if_needed and self.vision_client and self.pillow_available:
+                elif ocr_if_needed and self.pillow_available and (self.vision_client or self.tesseract_available):
                     # Apply OCR to page if no text found
                     ocr_text = self._ocr_pdf_page(page)
                     if ocr_text:
